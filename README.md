@@ -1,4 +1,4 @@
-# nth-bot.github.io
+# nthBOT
 Welcome to Zero's nthBOT, a minimalist &amp; 'not too high' chatbot engine.
 
-https://nth-bot.github.io/
+[nth-bot.github.io](https://nth-bot.github.io/)
