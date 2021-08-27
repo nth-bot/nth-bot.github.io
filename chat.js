@@ -75,6 +75,13 @@ window.onload = function() {
         `);
     });
 
+
+
+    ui.b("Github", function() {
+
+        window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
+    });
+
     
 
     ui.e(bot.db.join(''));
