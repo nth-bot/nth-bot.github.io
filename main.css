@@ -32,6 +32,10 @@ body {
 body * {
     scrollbar-color: #aaa #202020;
     scrollbar-width: thin;
+}
+
+html *{
+    max-width: 100vw !important;
     overflow-x: hidden !important;
 }
 
