@@ -1,0 +1,199 @@
+
+
+=================================================== ruleParser
+
+
+Source
+= t:Text? b:Block* {
+	return !t ? b : [{
+    	line: [t],
+        operator: "none"
+    }].concat(b);
+}
+
+
+_
+= [ \t\r\n]
+
+
+Block
+= Rule
+
+
+Rule
+= op:Operator _ l:Line _* {
+
+    return {
+        line: l,
+        operator: {
+            '#': "delimiter",
+            '<': "input",
+            '>': "output",
+            '@': "selfput",
+            '*': "if",
+            '/': "not",
+            '+': "add",
+            '-': "remove"
+        }[op]
+    };
+}
+
+
+Operator
+= '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-'
+
+
+Line
+= lc:LineContent+
+
+
+LineContent
+= Text
+/ Capture
+/ Insertion
+
+
+Text
+= c:Char+ { return { type: "text", content: c.join('') }; }
+
+
+Capture
+= '{' l:Line '}' { return { type: "capture", content: l }; }
+
+
+Insertion
+= '[' l:Line ']' { return { type: "insertion", content: l }; }
+
+
+Char
+= [^\#\<\>\@\*\/\+\-\{\}\[\]]
+/ '#' c:'#'+ { return c.join(''); }
+/ '<' c:'<'+ { return c.join(''); }
+/ '>' c:'>'+ { return c.join(''); }
+/ '@' c:'@'+ { return c.join(''); }
+/ '*' c:'*'+ { return c.join(''); }
+/ '/' c:'/'+ { return c.join(''); }
+/ '+' c:'+'+ { return c.join(''); }
+/ '-' c:'-'+ { return c.join(''); }
+/ '[' c:'['+ { return c.join(''); }
+/ ']' c:']'+ { return c.join(''); }
+/ '{' c:'{'+ { return c.join(''); }
+/ '}' c:'}'+ { return c.join(''); }
+/ c1:[\#\<\>\@\*\/\+\-\{\}\[\]] c2:[^ \t\r\n] { return c1 + c2; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=================================================== stringParser
+
+
+Source
+= t:$Text? b:Block* {
+	return !t ? b : [t].concat(b);
+}
+
+
+_
+= [ \t\r\n]
+
+
+Block
+= $Rule
+
+
+Rule
+= op:Operator _ l:Line _* {
+
+    return {
+        line: l,
+        operator: {
+            '#': "delimiter",
+            '<': "input",
+            '>': "output",
+            '@': "selfput",
+            '*': "if",
+            '/': "not",
+            '+': "add",
+            '-': "remove"
+        }[op]
+    };
+}
+
+
+Operator
+= '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-'
+
+
+Line
+= lc:LineContent+
+
+
+LineContent
+= Text
+/ Capture
+/ Insertion
+
+
+Text
+= c:Char+ { return { type: "text", content: c.join('') }; }
+
+
+Capture
+= '{' l:Line '}' { return { type: "capture", content: l }; }
+
+
+Insertion
+= '[' l:Line ']' { return { type: "insertion", content: l }; }
+
+
+Char
+= [^\#\<\>\@\*\/\+\-\{\}\[\]]
+/ '#' c:'#'+ { return c.join(''); }
+/ '<' c:'<'+ { return c.join(''); }
+/ '>' c:'>'+ { return c.join(''); }
+/ '@' c:'@'+ { return c.join(''); }
+/ '*' c:'*'+ { return c.join(''); }
+/ '/' c:'/'+ { return c.join(''); }
+/ '+' c:'+'+ { return c.join(''); }
+/ '-' c:'-'+ { return c.join(''); }
+/ '[' c:'['+ { return c.join(''); }
+/ ']' c:']'+ { return c.join(''); }
+/ '{' c:'{'+ { return c.join(''); }
+/ '}' c:'}'+ { return c.join(''); }
+/ c1:[\#\<\>\@\*\/\+\-\{\}\[\]] c2:[^ \t\r\n] { return c1 + c2; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
