@@ -94,8 +94,8 @@ var ui = {
 };
 
 
-ui.b("Clear editor", () => { ui.e(''); });
-ui.b("Clear terminal", () => { ui.t(); });
+//ui.b("Clear editor", () => { ui.e(''); });
+//ui.b("Clear terminal", () => { ui.t(); });
 
 
 setInterval(function() {
