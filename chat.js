@@ -36,14 +36,14 @@ window.onload = function() {
 
 
 
-    ui.b("Dump db", function() {
+    ui.b("Dump", function() {
 
         ui.e(bot.db.join(''));
     });
 
 
 
-    ui.b("Refresh db", function() {
+    ui.b("Refresh", function() {
 
         bot.db = [];
         bot.load(ui.e());
