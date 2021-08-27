@@ -34,11 +34,6 @@ body * {
     scrollbar-width: thin;
 }
 
-html *{
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-}
-
 
 ::selection {
     color: black;
