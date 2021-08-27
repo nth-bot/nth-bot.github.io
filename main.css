@@ -51,6 +51,7 @@ body * {
 
 #terminal {
     width: 100vw !important;
+    margin-bottom: var(--toolbar-height);
 }
 
 
@@ -61,7 +62,6 @@ body * {
     border: none;
     font-size: 12px;
     padding: 10px;
-    margin-top: var(--toolbar-height);
 }
 
 
@@ -87,7 +87,7 @@ body * {
     color: white;
     user-select: none;
     position: fixed;
-    top: 0;
+    bottom: 0;
 }
 
 
@@ -109,7 +109,7 @@ body * {
 
 #time {
     position: fixed;
-    bottom: 1em;
+    bottom: 3em;
     right: 2em;
     font-size: 12px;
 }
