@@ -13,7 +13,8 @@ function Bot(options) {
     this.inputQueue = [];
     this.state = {
         variables: {},
-        addToDb: []
+        addToDb: [],
+        outputCandidates: []
     };
 }
 
@@ -75,19 +76,21 @@ Bot.prototype.step = function() {
 
                 for (let rule of parsed) {
 
-                    // console.log("[input]", input);
-                    // console.log("[rule]", rule);
-
                     this.applyOperator[rule.operator](input, rule.line, this);
-
-                    // console.log("[state]", this.state);
                 }
             }
         }
         this.db = this.state.addToDb.concat(this.db);
         this.state.addToDb = [];
     }
-    // console.log("[state]", this.state);
+
+    if (this.state.outputCandidates.length) {
+        
+        let chosen = Math.floor(Math.random() * this.state.outputCandidates.length);
+        this.output(this.state.outputCandidates[chosen]);
+
+        this.state.outputCandidates = [];
+    }
 }
 
 
@@ -141,8 +144,8 @@ Bot.prototype.applyOperator["input"] = function(input, ruleLine, bot) {
     for (let item of ruleLine)
         if (item.type === "text")
         
-            regexpStr += item.content.replace(/\n/g, ''); // TODO enhance handling of whitespaces/newlines
-
+            regexpStr += item.content.replace(/\n/g, '');
+            
         else {
             
             regexpStr += "(.*?)";
@@ -151,12 +154,9 @@ Bot.prototype.applyOperator["input"] = function(input, ruleLine, bot) {
 
     regexpStr += '$';
 
-    let regexp = new RegExp(regexpStr);
+    let regexp = new RegExp(regexpStr, 'i');
 
     let captures = input.trim().match(regexp);
-
-    // console.log("[INPUT]", input);
-    // console.log("[CAPTURES]", captures);
 
     if (captures) {
 
@@ -177,7 +177,7 @@ Bot.prototype.applyOperator["output"] = function(input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
 
-        bot.output(bot.outputify(ruleLine));
+        bot.state.outputCandidates.push(bot.outputify(ruleLine));
     }
 }
 
