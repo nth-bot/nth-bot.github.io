@@ -14,6 +14,7 @@ function Bot(options) {
     this.state = {
         variables: {},
         addToDb: [],
+        dbAfterRemove: [],
         outputCandidates: []
     };
 }
@@ -80,6 +81,10 @@ Bot.prototype.step = function() {
                 }
             }
         }
+        if (this.state.dbAfterRemove.length) {
+            this.db = this.state.dbAfterRemove;
+            this.state.dbAfterRemove = [];
+        }
         this.db = this.state.addToDb.concat(this.db);
         this.state.addToDb = [];
     }
@@ -115,6 +120,31 @@ Bot.prototype.outputify = function(content) {
 
 
 
+Bot.prototype.buildRegexp = function(ruleLine) {
+
+    let regexpStr = '^';
+    let varNames = [];
+
+    for (let item of ruleLine)
+        if (item.type === "text")
+        
+            regexpStr += item.content.replace(/\n/g, '');
+            
+        else {
+            
+            regexpStr += "(.*?)";
+            varNames.push(bot.outputify(item.content));
+        }
+
+    regexpStr += '$';
+
+    return { varNames, regexp: new RegExp(regexpStr, 'i') };
+}
+
+
+
+
+
 Bot.prototype.applyOperator = {};
 
 
@@ -138,23 +168,7 @@ Bot.prototype.applyOperator["delimiter"] = function(input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["input"] = function(input, ruleLine, bot) {
 
-    let regexpStr = '^';
-    let varNames = [];
-
-    for (let item of ruleLine)
-        if (item.type === "text")
-        
-            regexpStr += item.content.replace(/\n/g, '');
-            
-        else {
-            
-            regexpStr += "(.*?)";
-            varNames.push(bot.outputify(item.content));
-        }
-
-    regexpStr += '$';
-
-    let regexp = new RegExp(regexpStr, 'i');
+    let { varNames, regexp } = bot.buildRegexp(ruleLine);
 
     let captures = input.trim().match(regexp);
 
@@ -246,17 +260,39 @@ Bot.prototype.applyOperator["remove"] = function(input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
 
-        let newDb = [];
-                
+        let thingToRemove = [];
+        let text = '';
+
+        for (let item of ruleLine) {
+            if (item.type === "text") text += item.content;
+            if (item.type === "insertion") text += bot.state.variables[bot.outputify(item.content)] || '';
+            if (item.type === "capture") {
+                thingToRemove.push({ type: "text", content: text });
+                thingToRemove.push(item);
+                text = '';
+            }
+        }
+        if (text.length) thingToRemove.push({ type: "text", content: text });
+
+        let { varNames, regexp } = bot.buildRegexp(thingToRemove);
+
+        console.log(thingToRemove);
+        console.log(regexp);
+        
         for (let item of bot.db) {
 
-            bot.state.inhibited = false;
-            bot.applyOperator.input(item, ruleLine, bot);
+            let captures = item.trim().match(regexp);
 
-            if (bot.state.inhibited) newDb.push(item);
+            if (captures) {
+
+                for (let v = 0; v < varNames.length; v++)
+                bot.state.variables[varNames[v]] = captures[v + 1];
+    
+            } else {
+
+                bot.state.dbAfterRemove.push(item);
+            }
         }
-        bot.db = newDb;
-        bot.state.inhibited = false;
     }
 }
 
