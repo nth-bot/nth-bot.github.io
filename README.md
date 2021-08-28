@@ -1,7 +1,8 @@
 # nthBOT
+
 Welcome to Zero's nthBOT, a minimalist &amp; 'not too high' chatbot engine.
 
-[nth-bot.github.io](https://nth-bot.github.io/)
+Download and use locally, or try it inline: [nth-bot.github.io](https://nth-bot.github.io/)
 
 ![](https://github.com/nth-bot/nth-bot.github.io/raw/main/small-android.png)
 
@@ -38,4 +39,5 @@ Welcome to Zero's nthBOT, a minimalist &amp; 'not too high' chatbot engine.
         
 ## Documentation
 
-Check out [the wiki](https://github.com/nth-bot/nth-bot.github.io/wiki)!
+Check out [the wiki](https://github.com/nth-bot/nth-bot.github.io/wiki) ✨
+  
