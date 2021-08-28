@@ -36,3 +36,6 @@ Welcome to Zero's nthBOT, a minimalist &amp; 'not too high' chatbot engine.
         - Github, opens the nthBOT github project page
 
         
+## Documentation
+
+Check out [the wiki](https://github.com/nth-bot/nth-bot.github.io/wiki)!
