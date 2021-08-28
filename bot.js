@@ -276,9 +276,6 @@ Bot.prototype.applyOperator["remove"] = function(input, ruleLine, bot) {
 
         let { varNames, regexp } = bot.buildRegexp(thingToRemove);
 
-        console.log(thingToRemove);
-        console.log(regexp);
-        
         for (let item of bot.db) {
 
             let captures = item.trim().match(regexp);
