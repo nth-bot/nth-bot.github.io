@@ -75,6 +75,7 @@ window.onload = function() {
 
 
         In the toolbar:
+        - Clear, clears the terminal
         - List, shows a list of editors saved in the browser's Localstorage
         - Load, loads an editor from the browser's Localstorage
         - Save, saves the current editor to the browser's Localstorage
