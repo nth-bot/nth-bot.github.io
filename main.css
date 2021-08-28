@@ -25,7 +25,7 @@ body {
     overflow: hidden;
     width: 100vw;
 
-    --toolbar-height: 28px;
+    --toolbar-height: 24px;
 }
 
 
@@ -94,7 +94,7 @@ body * {
 
 
 #toolbar span.button {
-    height: calc( var(--toolbar-height) - 4px );
+    height: var(--toolbar-height);
     display: inline-block;
     font-family: Roboto;
     font-size: 12px;
