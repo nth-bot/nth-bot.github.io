@@ -19,13 +19,13 @@
 
 
 body {
-    background: #202020;;
+    background: #202020;
     color: #C0C0C0;
     font-family: RobotoMono;
     overflow: hidden;
     width: 100vw;
 
-    --toolbar-height: 24px;
+    --toolbar-height: 28px;
 }
 
 
@@ -44,7 +44,7 @@ body * {
 #editor, #terminal, #terminal * {
     color: #E0E0E0;
     font-family: RobotoMono;
-    background: #202020;
+    background: transparent;
     line-height: 1.5em;
 }
 
@@ -62,6 +62,7 @@ body * {
     font-size: 12px;
     padding: 10px;
     margin-top: var(--toolbar-height);
+    position: relative;
 }
 
 
@@ -93,18 +94,27 @@ body * {
 
 
 #toolbar span.button {
-    height: var(--toolbar-height);
+    height: calc( var(--toolbar-height) - 4px );
     display: inline-block;
     font-family: Roboto;
     font-size: 12px;
-    margin-left: 2em;
+    margin-left: 1.5em;
     cursor: pointer;
     opacity: 0.8;
+    border-radius: 4px;
+    padding: 0 0.25em;
 }
 
 
 #toolbar span.button:hover {
     opacity: 1;
+}
+
+
+#toolbar span.button:active {
+    opacity: 1;
+    background: #F0A000;
+    text-shadow: 0 -2px 0px black;
 }
 
 

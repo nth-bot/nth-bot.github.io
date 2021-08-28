@@ -72,6 +72,17 @@ window.onload = function() {
             []    inline       insert
             
         https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/
+
+
+        In the toolbar:
+        - List, shows a list of editors saved in the browser's Localstorage
+        - Load, loads an editor from the browser's Localstorage
+        - Save, saves the current editor to the browser's Localstorage
+        - Dump, writes in the editor the current content of the bot's database
+        - Refresh, replaces the bot's database by the current editor
+        - Help, shows this help file in the editor
+        - Github, opens the nthBOT github project page
+
         `);
     });
 
@@ -99,7 +110,8 @@ let source = `
 `;
 
 let bot = new Bot({
-    output: (txt) => { ui.t(txt.trim()); }
+    output: (txt) => { ui.t(txt.trim()); },
+    selfputTimeout: 500
 });
 
 bot.load(source);
