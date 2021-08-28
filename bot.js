@@ -69,7 +69,7 @@ Bot.prototype.step = function() {
         for (let datum of this.db) {
 
             let parsed;
-            try { parsed = ruleParser.parse(datum); }
+            try { parsed = ruleParser.parse(datum.trim()); }
             catch(e) {}
 
             if (parsed) {
