@@ -2,7 +2,7 @@
 
 Welcome to Zero's nthBOT, a minimalist &amp; 'not too high' chatbot engine.
 
-Download and use locally, or try it inline:
+Download and use locally, or try it online:
 
 * [nth-bot.github.io](https://nth-bot.github.io/)
 
