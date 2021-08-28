@@ -220,6 +220,8 @@ Bot.prototype.applyOperator["if"] = function(input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["not"] = function(input, ruleLine, bot) {
 
+    if (bot.state.inhibited) return;
+
     bot.applyOperator["if"](input, ruleLine, bot);
     bot.state.inhibited = !bot.state.inhibited;
 }
