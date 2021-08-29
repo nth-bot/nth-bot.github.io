@@ -25,9 +25,6 @@ Download and use locally, or try it online:
             {}    inline       capture
             []    inline       insert
             
-        https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/
-
-
         In the toolbar:
         - List, shows a list of editors saved in the browser's Localstorage
         - Load, loads an editor from the browser's Localstorage
