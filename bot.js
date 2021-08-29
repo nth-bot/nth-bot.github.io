@@ -85,7 +85,7 @@ Bot.prototype.step = function() {
             this.db = this.state.dbAfterRemove;
             this.state.dbAfterRemove = [];
         }
-        this.db = this.state.addToDb.concat(this.db);
+        this.load(this.state.addToDb.join(' '));
         this.state.addToDb = [];
     }
 
