@@ -127,14 +127,15 @@ body * {
 
 #text-background {
     position: fixed;
-    bottom: -10vh;
-    right: 0;
+    bottom: 50vh;
+    right: 50vw;
     z-index: -1;
     font-family: RobotoBlack;
-    font-size: 50vh;
+    font-size: 50vw;
+    line-height: 80%;
     text-align: center;
     transform-origin: center;
-    transform: rotate(-90deg);
+    transform: translate(50%, 50%) rotate(-45deg);
     color: #282828;
     font-variant: small-caps;
 }

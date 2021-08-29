@@ -102,6 +102,8 @@ window.onload = function() {
         window.open("https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/", "_blank");
     });
 
+
+
     
 
     ui.e(bot.db.join(''));
