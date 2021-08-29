@@ -111,9 +111,20 @@ Bot.prototype.outputify = function(content) {
         if (item.type === "text") result += item.content;
 
         if (item.type === "insertion") result += this.state.variables[this.outputify(item.content)] || '';
+
+        if (item.type === "capture") result += this.outputify(item.content) || '';
     }
 
     return result;
+}
+
+
+
+
+
+Bot.prototype.escapeRegexp = function(str) {
+
+    return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
 
@@ -128,12 +139,12 @@ Bot.prototype.buildRegexp = function(ruleLine) {
     for (let item of ruleLine)
         if (item.type === "text")
         
-            regexpStr += item.content.replace(/\n/g, '');
+            regexpStr += this.escapeRegexp(item.content.replace(/\n/g, ''));
             
         else {
             
             regexpStr += "(.*?)";
-            varNames.push(bot.outputify(item.content));
+            varNames.push(this.outputify(item.content));
         }
 
     regexpStr += '$';
