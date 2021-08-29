@@ -71,9 +71,6 @@ window.onload = function() {
             {}    inline       capture
             []    inline       insert
             
-        https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/
-
-
         In the toolbar:
         - Clear, clears the terminal
         - List, shows a list of editors saved in the browser's Localstorage
@@ -82,24 +79,16 @@ window.onload = function() {
         - Dump, writes in the editor the current content of the bot's database
         - Refresh, replaces the bot's database by the current editor
         - Help, shows this help file in the editor
-        - Github, opens the NthBOT github project page
-        - Forum, opens the AiDreams forum
+        - Doc, opens the NthBOT documentation page on Github
 
         `);
     });
 
 
 
-    ui.b("Github", function() {
+    ui.b("Doc", function() {
 
         window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
-    });
-
-
-
-    ui.b("Forum", function() {
-
-        window.open("https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/", "_blank");
     });
 
 
