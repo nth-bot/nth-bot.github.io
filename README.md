@@ -6,7 +6,7 @@ Download and use locally, or try it online:
 
 * [nth-bot.github.io](https://nth-bot.github.io/)
 
-![](https://github.com/nth-bot/nth-bot.github.io/raw/main/small-android.png)
+[![](https://github.com/nth-bot/nth-bot.github.io/raw/main/small-android.png)](https://nth-bot.github.io/)
 
 
         Welcome to Zero's NthBOT, a minimalist & 'not too high' chatbot engine.
