@@ -36,7 +36,7 @@ Download and use locally, or try it online:
         - Dump, writes in the editor the current content of the bot's database
         - Refresh, replaces the bot's database by the current editor
         - Help, shows this help file in the editor
-        - Github, opens the nthBOT github project page
+        - Github, opens the NthBOT github project page
 
         
 ## Documentation
