@@ -230,13 +230,9 @@ Bot.prototype.applyOperator["if"] = function(input, ruleLine, bot) {
 
     if (bot.state.inhibited) return;
 
-    for (let item of bot.db) {
-
-        bot.state.inhibited = false;
-        bot.applyOperator.input(item, ruleLine, bot);
-
-        if (!bot.state.inhibited) return;
-    }
+    let found = bot.iterateDb(ruleLine, ()=>{});
+    
+    if (!found) bot.state.inhibited = true;
 }
 
 
@@ -270,45 +266,52 @@ Bot.prototype.applyOperator["add"] = function(input, ruleLine, bot) {
 Bot.prototype.applyOperator["remove"] = function(input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
+    
+        bot.iterateDb(ruleLine, bot.state.dbAfterRemove.push);
+    }
+}
 
-        let thingToRemove = [];
+
+				
+
+
+Bot.prototype.iterateDb = function(ruleLine, callback) {
+
+        let found = false;
+        let things = [];
         let text = '';
 
         for (let item of ruleLine) {
             if (item.type === "text") text += item.content;
             if (item.type === "insertion") text += bot.state.variables[bot.outputify(item.content)] || '';
             if (item.type === "capture") {
-                thingToRemove.push({ type: "text", content: text });
-                thingToRemove.push(item);
+                things.push({ type: "text", content: text });
+                things.push(item);
                 text = '';
             }
         }
-        if (text.length) thingToRemove.push({ type: "text", content: text });
+        if (text.length) things.push({ type: "text", content: text });
 
-        let { varNames, regexp } = bot.buildRegexp(thingToRemove);
+        let { varNames, regexp } = this.buildRegexp(things);
 
         for (let item of bot.db) {
 
             let captures = item.trim().match(regexp);
 
             if (captures) {
+            
+                found = true;
 
                 for (let v = 0; v < varNames.length; v++)
-                bot.state.variables[varNames[v]] = captures[v + 1];
+                    this.state.variables[varNames[v]] = captures[v + 1];
     
             } else {
 
-                bot.state.dbAfterRemove.push(item);
+                callback.call(this, item);
             }
         }
-    }
+        return found;
 }
-
-
-
-
-
-
 
 
 

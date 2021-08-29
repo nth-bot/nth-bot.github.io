@@ -95,7 +95,7 @@ var ui = {
 
 
 //ui.b("Clear editor", () => { ui.e(''); });
-ui.b("Clear", () => { ui.t(); });
+//ui.b("Clear", () => { ui.t(); });
 
 
 setInterval(function() {
