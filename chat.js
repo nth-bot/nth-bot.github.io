@@ -55,7 +55,7 @@ window.onload = function() {
 
         ui.e(`
 
-        Welcome to Zero's nthBOT, a minimalist & 'not too high' chatbot engine.
+        Welcome to Zero's NthBOT, a minimalist & 'not too high' chatbot engine.
 
             op    type         description
             --    ----         -----------
@@ -82,7 +82,8 @@ window.onload = function() {
         - Dump, writes in the editor the current content of the bot's database
         - Refresh, replaces the bot's database by the current editor
         - Help, shows this help file in the editor
-        - Github, opens the nthBOT github project page
+        - Github, opens the NthBOT github project page
+        - Forum, opens the AiDreams forum
 
         `);
     });
@@ -92,6 +93,13 @@ window.onload = function() {
     ui.b("Github", function() {
 
         window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
+    });
+
+
+
+    ui.b("Forum", function() {
+
+        window.open("https://aidreams.co.uk/forum/general-chatbots-and-software/my-vision-of-a-pure-chatbot-engine/", "_blank");
     });
 
     
