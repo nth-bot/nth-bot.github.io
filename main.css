@@ -124,3 +124,17 @@ body * {
     right: 2em;
     font-size: 12px;
 }
+
+#text-background {
+    position: fixed;
+    bottom: -10vh;
+    right: 0;
+    z-index: -1;
+    font-family: RobotoBlack;
+    font-size: 50vh;
+    text-align: center;
+    transform-origin: center;
+    transform: rotate(-90deg);
+    color: #282828;
+    font-variant: small-caps;
+}
