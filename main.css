@@ -80,7 +80,7 @@ body * {
     background: black;
     color: white;
     user-select: none;
-    position: relative;
+    position: fixed;
     top: 0;
     z-index: 10;
     font-variant: small-caps;
