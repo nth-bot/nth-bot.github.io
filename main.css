@@ -147,6 +147,10 @@ body * {
     padding-right: 1em;
 }
 
+.CodeMirror-lines span {
+    padding-left: 0.25em;
+}
+
 .CodeMirror-gutters{
     background: transparent;
     border: none;
@@ -174,7 +178,7 @@ body * {
 }
 
 .cm-insertion {
-    color: #C0C0FF;
+    color: #A0A0FF;
     background: rgba(56,139,253,0.1);
 }
 

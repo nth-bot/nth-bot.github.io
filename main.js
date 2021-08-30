@@ -26,12 +26,15 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
 CodeMirror.defineSimpleMode("mymode", {
     // The start state contains the rules that are initially used
     start: [
+        { regex: /(\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
+
         { regex: /\[/, token: "insertion", push: "insertion" },
         { regex: /\{/, token: "capture", push: "capture" },
 
         { regex: /[-+\/*@<>]+/, token: "operator" },
 
-        { regex: /#/, token: "delimiter", next: "delimiter" },
+        { regex: /#/, token: "operator", next: "delimiter" },
+        { regex: /./, token: "normal" }
     ],
     insertion: [
         { regex: /\[/, token: "insertion", push: "insertion" },
@@ -57,7 +60,7 @@ CodeMirror.defineSimpleMode("mymode", {
 var codeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
     indentUnit: 4,
     indentWithTabs: false,
-    lineNumbers: true,
+    //lineNumbers: true,
     theme: "blackboard",
     mode: "mymode"
 });
