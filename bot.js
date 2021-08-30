@@ -306,7 +306,9 @@ Bot.prototype.applyOperator["remove"] = function (input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
 
-        bot.iterateDb(ruleLine, bot.state.dbAfterRemove.push);
+        bot.iterateDb(ruleLine, (item) => {
+            bot.state.dbAfterRemove.push(item)
+        });
     }
 }
 
