@@ -23,7 +23,7 @@ function Bot(options) {
 
 
 
-Bot.prototype.load = function(source) {
+Bot.prototype.load = function (source) {
 
     let stringParsed = stringParser.parse(source);
 
@@ -34,7 +34,7 @@ Bot.prototype.load = function(source) {
 
 
 
-Bot.prototype.run = function(interval) {
+Bot.prototype.run = function (interval) {
 
     this.runningLoop = setInterval(() => { this.step(); }, interval || this.interval);
 }
@@ -43,7 +43,7 @@ Bot.prototype.run = function(interval) {
 
 
 
-Bot.prototype.suspend = function() {
+Bot.prototype.suspend = function () {
 
     clearInterval(this.runningLoop);
 }
@@ -52,7 +52,7 @@ Bot.prototype.suspend = function() {
 
 
 
-Bot.prototype.input = function(i) {
+Bot.prototype.input = function (i) {
 
     this.inputQueue.push(i);
 }
@@ -61,7 +61,7 @@ Bot.prototype.input = function(i) {
 
 
 
-Bot.prototype.step = function() {
+Bot.prototype.step = function () {
 
     while (this.inputQueue.length > 0) {
 
@@ -71,7 +71,7 @@ Bot.prototype.step = function() {
 
             let parsed;
             try { parsed = ruleParser.parse(datum.trim()); }
-            catch(e) {}
+            catch (e) { }
 
             if (parsed) {
 
@@ -85,12 +85,12 @@ Bot.prototype.step = function() {
             this.db = this.state.dbAfterRemove;
             this.state.dbAfterRemove = [];
         }
-        this.load(this.state.addToDb.join(' '));
+        this.load('\n'+this.state.addToDb.join('\n'));
         this.state.addToDb = [];
     }
 
     if (this.state.outputCandidates.length) {
-        
+
         let chosen = Math.floor(Math.random() * this.state.outputCandidates.length);
         this.output(this.state.outputCandidates[chosen]);
 
@@ -102,7 +102,7 @@ Bot.prototype.step = function() {
 
 
 
-Bot.prototype.outputify = function(content) {
+Bot.prototype.outputify = function (content) {
 
     let result = '';
 
@@ -122,7 +122,7 @@ Bot.prototype.outputify = function(content) {
 
 
 
-Bot.prototype.escapeRegexp = function(str) {
+Bot.prototype.escapeRegexp = function (str) {
 
     return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
@@ -131,19 +131,23 @@ Bot.prototype.escapeRegexp = function(str) {
 
 
 
-Bot.prototype.buildRegexp = function(ruleLine) {
+Bot.prototype.buildRegexp = function (ruleLine) {
 
     let regexpStr = '^';
     let varNames = [];
 
     for (let item of ruleLine)
         if (item.type === "text")
-        
+
             regexpStr += this.escapeRegexp(item.content.replace(/\n/g, ''));
-            
-        else {
-            
-            regexpStr += "(.*?)";
+
+        else if (item.type === "insertion") {
+
+            regexpStr += this.state.variables[this.outputify(item.content)] || '';
+
+        } else { // capture
+
+            regexpStr += "([\\s\\S]*?)";
             varNames.push(this.outputify(item.content));
         }
 
@@ -156,19 +160,48 @@ Bot.prototype.buildRegexp = function(ruleLine) {
 
 
 
+Bot.prototype.iterateDb = function (ruleLine, callback) {
+
+    let found = false;
+
+    let { varNames, regexp } = this.buildRegexp(ruleLine);
+
+    for (let item of bot.db) {
+
+        let captures = item.trim().match(regexp);
+
+        if (captures) {
+
+            found = true;
+
+            for (let v = 0; v < varNames.length; v++)
+                this.state.variables[varNames[v]] = captures[v + 1];
+
+        } else {
+
+            if (callback) callback.call(this, item);
+        }
+    }
+    return found;
+}
+
+
+
+
+
 Bot.prototype.applyOperator = {};
 
 
 
 
 
-Bot.prototype.applyOperator["none"] = function(input, ruleLine, bot) {}
+Bot.prototype.applyOperator["none"] = function (input, ruleLine, bot) { }
 
 
 
 
 
-Bot.prototype.applyOperator["delimiter"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine, bot) {
 
     bot.state.inhibited = false;
 }
@@ -177,7 +210,7 @@ Bot.prototype.applyOperator["delimiter"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["input"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["input"] = function (input, ruleLine, bot) {
 
     let { varNames, regexp } = bot.buildRegexp(ruleLine);
 
@@ -198,7 +231,7 @@ Bot.prototype.applyOperator["input"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["output"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["output"] = function (input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
 
@@ -210,10 +243,10 @@ Bot.prototype.applyOperator["output"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["selfput"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
-        
+
         setTimeout(() => {
 
             bot.input(bot.outputify(ruleLine));
@@ -226,12 +259,12 @@ Bot.prototype.applyOperator["selfput"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["if"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["if"] = function (input, ruleLine, bot) {
 
     if (bot.state.inhibited) return;
 
-    let found = bot.iterateDb(ruleLine, ()=>{});
-    
+    let found = bot.iterateDb(ruleLine);
+
     if (!found) bot.state.inhibited = true;
 }
 
@@ -239,7 +272,7 @@ Bot.prototype.applyOperator["if"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["not"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["not"] = function (input, ruleLine, bot) {
 
     if (bot.state.inhibited) return;
 
@@ -251,10 +284,10 @@ Bot.prototype.applyOperator["not"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["add"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["add"] = function (input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
-        
+
         bot.state.addToDb.unshift(bot.outputify(ruleLine));
     }
 }
@@ -263,54 +296,12 @@ Bot.prototype.applyOperator["add"] = function(input, ruleLine, bot) {
 
 
 
-Bot.prototype.applyOperator["remove"] = function(input, ruleLine, bot) {
+Bot.prototype.applyOperator["remove"] = function (input, ruleLine, bot) {
 
     if (!bot.state.inhibited) {
-    
+
         bot.iterateDb(ruleLine, bot.state.dbAfterRemove.push);
     }
-}
-
-
-				
-
-
-Bot.prototype.iterateDb = function(ruleLine, callback) {
-
-        let found = false;
-        let things = [];
-        let text = '';
-
-        for (let item of ruleLine) {
-            if (item.type === "text") text += item.content;
-            if (item.type === "insertion") text += bot.state.variables[bot.outputify(item.content)] || '';
-            if (item.type === "capture") {
-                things.push({ type: "text", content: text });
-                things.push(item);
-                text = '';
-            }
-        }
-        if (text.length) things.push({ type: "text", content: text });
-
-        let { varNames, regexp } = this.buildRegexp(things);
-
-        for (let item of bot.db) {
-
-            let captures = item.trim().match(regexp);
-
-            if (captures) {
-            
-                found = true;
-
-                for (let v = 0; v < varNames.length; v++)
-                    this.state.variables[varNames[v]] = captures[v + 1];
-    
-            } else {
-
-                callback.call(this, item);
-            }
-        }
-        return found;
 }
 
 
