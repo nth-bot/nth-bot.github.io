@@ -36,7 +36,10 @@ Bot.prototype.load = function (source) {
 
 Bot.prototype.run = function (interval) {
 
-    this.runningLoop = setInterval(() => { this.step(); }, interval || this.interval);
+    if (interval) this.interval = interval;
+
+    this.running = true;
+    this.step();
 }
 
 
@@ -45,7 +48,7 @@ Bot.prototype.run = function (interval) {
 
 Bot.prototype.suspend = function () {
 
-    clearInterval(this.runningLoop);
+    this.running = false;
 }
 
 
@@ -96,6 +99,9 @@ Bot.prototype.step = function () {
 
         this.state.outputCandidates = [];
     }
+
+    if (this.running)
+        setTimeout(() => { this.step(); }, this.interval);
 }
 
 

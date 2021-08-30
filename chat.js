@@ -20,7 +20,7 @@ window.onload = function() {
 
         let name = prompt("LOCALSTORAGE\nLoad from path");
 
-        if (ui.s().includes(name)) ui.e(ui.s(name));
+        if (ui.s().includes(name)) ui.e(ui.e() + '\n' + ui.s(name));
 
         else alert('LOCALSTORAGE\nUnknown path "' + name + '"');
     });

@@ -1,15 +1,5 @@
 
 
-Split(["#editor", "#terminal"], {
-    gutterSize: 5,
-    direction: "vertical",
-    elementStyle: function (dimension, size, gutterSize) {
-        return {
-            'height': 'calc(' + size + 'vh - ' + gutterSize + 'px - 2em)',
-        }
-    },
-});
-
 
 var jQueryTerminal = $('#terminal').terminal(function (command) {
     if (command !== '') {
@@ -17,7 +7,7 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
             bot.input(command);
             //var result = command;
             //if (typeof result != "undefined") this.echo(JSON.stringify(result, null, 4));
-        } catch(e) {
+        } catch (e) {
             this.echo(e.message);
             this.echo("Ready");
         }
@@ -30,16 +20,67 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
 });
 
 
-new EnhancedTextarea(document.getElementById("editor"));
+//new EnhancedTextarea(document.getElementById("editor"));
+
+
+CodeMirror.defineSimpleMode("mymode", {
+    // The start state contains the rules that are initially used
+    start: [
+        { regex: /\[/, token: "insertion", push: "insertion" },
+        { regex: /\{/, token: "capture", push: "capture" },
+
+        { regex: /[-+\/*@<>]+/, token: "operator" },
+
+        { regex: /#/, token: "delimiter", next: "delimiter" },
+    ],
+    insertion: [
+        { regex: /\[/, token: "insertion", push: "insertion" },
+        { regex: /\{/, token: "capture", push: "capture" },
+        { regex: /\]/, token: "insertion", pop: true },
+        { regex: /./, token: "insertion" }
+    ],
+    capture: [
+        { regex: /\[/, token: "insertion", push: "insertion" },
+        { regex: /\{/, token: "capture", push: "capture" },
+        { regex: /\}/, token: "capture", pop: true },
+        { regex: /./, token: "capture" }
+    ],
+    delimiter: [
+        { regex: /[-+\/*@<>]+/, token: "operator", next: "start" },
+        { regex: /./, token: "delimiter" }
+    ],
+    meta: {
+    }
+});
+
+
+var codeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
+    indentUnit: 4,
+    indentWithTabs: false,
+    lineNumbers: true,
+    theme: "blackboard",
+    mode: "mymode"
+});
+
+
+Split([".CodeMirror", "#terminal"], {
+    gutterSize: 5,
+    direction: "vertical",
+    elementStyle: function (dimension, size, gutterSize) {
+        return {
+            'height': 'calc(' + size + 'vh - ' + gutterSize + 'px - 2em)',
+        }
+    },
+});
 
 
 var ui = {
     toolbarButtons: {},
     e: function (txt) { // editor
         try {
-            if (typeof txt == "undefined") return document.getElementById("editor").value;
-            document.getElementById("editor").value = txt;
-        } catch(e) {
+            if (typeof txt == "undefined") return codeMirror.getValue();
+            codeMirror.setValue(txt);
+        } catch (e) {
             console.error(e.message);
         }
     },
@@ -53,7 +94,7 @@ var ui = {
                     `<span id="${name}" class="button" onclick="ui.toolbarButtons['${name}']()">${name}</span>`;
                 ui.toolbarButtons[name] = code;
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e.message);
         }
     },
@@ -69,7 +110,7 @@ var ui = {
             } else {
                 jQueryTerminal.read(txt, input => { handler(input); });
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e.message);
         }
     },
@@ -87,7 +128,7 @@ var ui = {
             } else {
                 return localStorage[k] = JSON.stringify(v);
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e.message);
         }
     },
@@ -98,7 +139,7 @@ var ui = {
 //ui.b("Clear", () => { ui.t(); });
 
 
-setInterval(function() {
+setInterval(function () {
     var time = new Date();
-    document.getElementById("time").innerHTML = time.getHours().toLocaleString(undefined, {minimumIntegerDigits: 2})+':'+time.getMinutes().toLocaleString(undefined, {minimumIntegerDigits: 2})+'.'+time.getSeconds().toLocaleString(undefined, {minimumIntegerDigits: 2});
+    document.getElementById("time").innerHTML = time.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + ':' + time.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + time.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 });
 }, 1000);

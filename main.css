@@ -1,8 +1,8 @@
 
 
 @font-face {
-    font-family: 'RobotoMono';
-    src: url('./RobotoMono-Regular.ttf')  format('truetype');
+    font-family: 'Inconsolata';
+    src: url('./Inconsolata-Regular.ttf')  format('truetype');
 }
 
 
@@ -21,7 +21,7 @@
 body {
     background: #202020;
     color: #C0C0C0;
-    font-family: RobotoMono;
+    font-family: Inconsolata;
     overflow: hidden;
     width: 100vw;
 
@@ -35,17 +35,12 @@ body * {
 }
 
 
-::selection {
-    color: black;
-    background: #A0A0A0;
-}
-
-
-#editor, #terminal, #terminal * {
-    color: #E0E0E0;
-    font-family: RobotoMono;
+.CodeMirror, #terminal, #terminal * {
+    color: unset;
+    font-family: Inconsolata;
     background: transparent;
-    line-height: 1.5em;
+    line-height: 1.25em;
+    font-size: 14px;
 }
 
 
@@ -54,15 +49,16 @@ body * {
 }
 
 
-#editor {
-    width: calc(100vw - 20px);
+.CodeMirror {
+    width: 100vw;
     resize: none;
     outline: none;
     border: none;
-    font-size: 12px;
-    padding: 10px;
+    /*font-size: 12px;*/
+    /*padding: 10px;*/
     margin-top: var(--toolbar-height);
-    position: relative;
+    /*position: relative;*/
+    height:unset;
 }
 
 
@@ -121,7 +117,7 @@ body * {
 
 #time {
     position: fixed;
-    bottom: 2em;
+    bottom: 1.5em;
     right: 2em;
     font-size: 12px;
 }
@@ -139,4 +135,50 @@ body * {
     transform: translate(50%, 50%) rotate(-45deg);
     color: #282828;
     font-variant: small-caps;
+}
+
+.CodeMirror-cursor {
+    background: #C0C0C0;
+    border: 1px solid #C0C0C0;
+}
+
+.CodeMirror-linenumber {
+    color: #404040;
+    padding-right: 1em;
+}
+
+.CodeMirror-gutters{
+    background: transparent;
+    border: none;
+}
+
+::selection *, .CodeMirror-selected pre span[role=presentation] {
+    color: black !important;
+    background: #808080;
+}
+
+.cm-s-blackboard div.CodeMirror-selected,
+.cm-s-blackboard .CodeMirror-line::selection, .cm-s-blackboard .CodeMirror-line > span::selection, .cm-s-blackboard .CodeMirror-line > span > span::selection,
+.cm-s-blackboard .CodeMirror-line::-moz-selection, .cm-s-blackboard .CodeMirror-line > span::-moz-selection, .cm-s-blackboard .CodeMirror-line > span > span::-moz-selection {
+ 
+    color: black !important;
+    background: #FFFFFF20;   
+}
+
+.cm-delimiter {
+    color: #80C080;
+}
+
+.cm-operator {
+    color: white;
+}
+
+.cm-insertion {
+    color: #C0C0FF;
+    background: rgba(56,139,253,0.1);
+    border-radius: 4px;
+}
+
+.cm-capture {
+    color: #F0A000;
 }
