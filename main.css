@@ -174,7 +174,7 @@ body * {
 
 .cm-insertion {
     color: #C0C0FF;
-    background: rgba(56,139,253,0.1);
+    text-shadow: 0 0 2px rgba(56,139,253,0.5);
 }
 
 .cm-capture {
