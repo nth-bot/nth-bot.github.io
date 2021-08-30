@@ -119,7 +119,7 @@ body * {
     position: fixed;
     bottom: 1.5em;
     right: 2em;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 #text-background {
@@ -176,7 +176,6 @@ body * {
 .cm-insertion {
     color: #C0C0FF;
     background: rgba(56,139,253,0.1);
-    border-radius: 4px;
 }
 
 .cm-capture {
