@@ -54,10 +54,7 @@ body * {
     resize: none;
     outline: none;
     border: none;
-    /*font-size: 12px;*/
-    /*padding: 10px;*/
-    margin-top: var(--toolbar-height);
-    /*position: relative;*/
+    padding-top: var(--toolbar-height);
     height:unset;
 }
 
@@ -165,7 +162,6 @@ body * {
 .cm-s-blackboard .CodeMirror-line::selection, .cm-s-blackboard .CodeMirror-line > span::selection, .cm-s-blackboard .CodeMirror-line > span > span::selection,
 .cm-s-blackboard .CodeMirror-line::-moz-selection, .cm-s-blackboard .CodeMirror-line > span::-moz-selection, .cm-s-blackboard .CodeMirror-line > span > span::-moz-selection {
  
-    color: black !important;
     background: #FFFFFF20;   
 }
 
