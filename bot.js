@@ -70,20 +70,8 @@ Bot.prototype.step = function () {
 
         let input = this.inputQueue.shift();
 
-        for (let datum of this.db) {
+        this.trackDb(this.db, input);
 
-            let parsed;
-            try { parsed = ruleParser.parse(datum.trim()); }
-            catch (e) { }
-
-            if (parsed) {
-
-                for (let rule of parsed) {
-
-                    this.applyOperator[rule.operator](input, rule.line, this);
-                }
-            }
-        }
         if (this.state.dbAfterRemove.length) {
             this.db = this.state.dbAfterRemove;
             this.state.dbAfterRemove = [];
@@ -102,6 +90,36 @@ Bot.prototype.step = function () {
 
     if (this.running)
         setTimeout(() => { this.step(); }, this.interval);
+}
+
+
+
+
+
+Bot.prototype.trackDb = function(db, input) {
+
+    if (!db.length) return;
+
+    let parsed;
+    try { parsed = ruleParser.parse(db[0].trim()); }
+    catch (e) { }
+
+    if (parsed) this.trackRule(parsed, input);
+
+    this.trackDb(db.slice(1), input);
+}
+
+
+
+
+
+Bot.prototype.trackRule = function(rules, input) {
+
+    if (!rules.length) return;
+
+    this.applyOperator[rules[0].operator](input, rules[0].line, this);
+
+    this.trackRule(rules.slice(1), input);
 }
 
 
