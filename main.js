@@ -50,6 +50,7 @@ CodeMirror.defineSimpleMode("mymode", {
     ],
     delimiter: [
         { regex: /[-+\/*@<>]+/, token: "operator", next: "start" },
+        { regex: /#/, token: "operator" },
         { regex: /./, token: "delimiter" }
     ],
     meta: {
