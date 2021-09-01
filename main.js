@@ -5,8 +5,6 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
     if (command !== '') {
         try {
             bot.input(command);
-            //var result = command;
-            //if (typeof result != "undefined") this.echo(JSON.stringify(result, null, 4));
         } catch (e) {
             this.echo(e.message);
             this.echo("Ready");
@@ -20,13 +18,13 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
 });
 
 
-//new EnhancedTextarea(document.getElementById("editor"));
+
 
 
 CodeMirror.defineSimpleMode("mymode", {
-    // The start state contains the rules that are initially used
+    
     start: [
-        { regex: /(\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
+        { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
 
         { regex: /\[/, token: "insertion", push: "insertion" },
         { regex: /\{/, token: "capture", push: "capture" },
@@ -61,14 +59,13 @@ CodeMirror.defineSimpleMode("mymode", {
 var codeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
     indentUnit: 4,
     indentWithTabs: false,
-    //lineNumbers: true,
     theme: "blackboard",
     mode: "mymode"
 });
 
 
 Split([".CodeMirror", "#terminal"], {
-    gutterSize: 5,
+    gutterSize: 8,
     direction: "vertical",
     elementStyle: function (dimension, size, gutterSize) {
         return {
