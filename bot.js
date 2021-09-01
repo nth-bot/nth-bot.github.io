@@ -76,13 +76,9 @@ Bot.prototype.step = function () {
             try { parsed = ruleParser.parse(datum.trim()); }
             catch (e) { }
 
-            if (parsed) {
-
-                for (let rule of parsed) {
-
+            if (parsed)
+                for (let rule of parsed)
                     this.applyOperator[rule.operator](input, rule.line, this);
-                }
-            }
         }
         if (this.state.dbAfterRemove.length) {
             this.db = this.state.dbAfterRemove;
@@ -114,11 +110,14 @@ Bot.prototype.outputify = function (content) {
 
     for (let item of content) {
 
-        if (item.type === "text") result += item.content;
+        if (item.type === "text")
+            result += item.content;
 
-        if (item.type === "insertion") result += this.state.variables[this.outputify(item.content)] || '';
+        if (item.type === "insertion")
+            result += this.state.variables[this.outputify(item.content)] || '';
 
-        if (item.type === "capture") result += this.outputify(item.content) || '';
+        if (item.type === "capture")
+            result += this.outputify(item.content) || '';
     }
 
     return result;
@@ -166,10 +165,9 @@ Bot.prototype.buildRegexp = function (ruleLine) {
 
 
 
-Bot.prototype.iterateDb = function (ruleLine, callback) {
+Bot.prototype.iterateDb = function (ruleLine, removeLast) {
 
-    let found = false;
-
+    let last = false;
     let { varNames, regexp } = this.buildRegexp(ruleLine);
 
     for (let item of bot.db) {
@@ -178,17 +176,17 @@ Bot.prototype.iterateDb = function (ruleLine, callback) {
 
         if (captures) {
 
-            found = true;
-
             for (let v = 0; v < varNames.length; v++)
                 this.state.variables[varNames[v]] = captures[v + 1];
 
-        } else {
-
-            if (callback) callback.call(this, item);
+            last = item;
         }
     }
-    return found;
+
+    if (removeLast && last)
+        bot.state.dbAfterRemove = bot.db.filter(item => item !== last);
+
+    return !!last;
 }
 
 
@@ -222,15 +220,11 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine, bot) {
 
     let captures = input.trim().match(regexp);
 
-    if (captures) {
-
+    if (captures)
         for (let v = 0; v < varNames.length; v++)
             bot.state.variables[varNames[v]] = captures[v + 1];
-
-    } else {
-
+    else
         bot.state.inhibited = true;
-    }
 }
 
 
@@ -239,10 +233,8 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["output"] = function (input, ruleLine, bot) {
 
-    if (!bot.state.inhibited) {
-
+    if (!bot.state.inhibited)
         bot.state.outputCandidates.push(bot.outputify(ruleLine));
-    }
 }
 
 
@@ -251,14 +243,10 @@ Bot.prototype.applyOperator["output"] = function (input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, bot) {
 
-    if (!bot.state.inhibited) {
-
+    if (!bot.state.inhibited)   
         setTimeout(() => {
-
             bot.input(bot.outputify(ruleLine));
-
         }, bot.selfputTimeout);
-    }
 }
 
 
@@ -292,10 +280,8 @@ Bot.prototype.applyOperator["not"] = function (input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["add"] = function (input, ruleLine, bot) {
 
-    if (!bot.state.inhibited) {
-
+    if (!bot.state.inhibited)
         bot.state.addToDb.unshift(bot.outputify(ruleLine));
-    }
 }
 
 
@@ -304,12 +290,8 @@ Bot.prototype.applyOperator["add"] = function (input, ruleLine, bot) {
 
 Bot.prototype.applyOperator["remove"] = function (input, ruleLine, bot) {
 
-    if (!bot.state.inhibited) {
-
-        bot.iterateDb(ruleLine, (item) => {
-            bot.state.dbAfterRemove.push(item)
-        });
-    }
+    if (!bot.state.inhibited)
+        bot.iterateDb(ruleLine, true);
 }
 
 
