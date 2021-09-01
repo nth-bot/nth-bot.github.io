@@ -181,3 +181,7 @@ body * {
 .cm-capture {
     color: #F0A000;
 }
+
+.underline {
+    text-decoration: underline;
+}

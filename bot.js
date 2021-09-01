@@ -78,7 +78,7 @@ Bot.prototype.step = function () {
 
             if (parsed)
                 for (let rule of parsed)
-                    this.applyOperator[rule.operator](input, rule.line, this);
+                    this.applyOperator[rule.operator].call(this, input, rule.line);
         }
         if (this.state.dbAfterRemove.length) {
             this.db = this.state.dbAfterRemove;
@@ -193,105 +193,123 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast) {
 
 
 
+Bot.prototype.dataize = function(ruleLine) {
+
+    let strLine = this.outputify(ruleLine);
+
+    if (ruleParser.parse(strLine)[0].operator === "none")
+        strLine = "# " + strLine;
+    
+    return strLine;
+}
+
+
+
+
+
 Bot.prototype.applyOperator = {};
 
 
 
 
 
-Bot.prototype.applyOperator["none"] = function (input, ruleLine, bot) { }
+Bot.prototype.applyOperator["none"] = function (input, ruleLine) { }
 
 
 
 
 
-Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine) {
 
-    bot.state.inhibited = false;
+    this.state.inhibited = false;
 }
 
 
 
 
 
-Bot.prototype.applyOperator["input"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
 
-    let { varNames, regexp } = bot.buildRegexp(ruleLine);
+    let { varNames, regexp } = this.buildRegexp(ruleLine);
 
     let captures = input.trim().match(regexp);
 
     if (captures)
         for (let v = 0; v < varNames.length; v++)
-            bot.state.variables[varNames[v]] = captures[v + 1];
+            this.state.variables[varNames[v]] = captures[v + 1];
     else
-        bot.state.inhibited = true;
+        this.state.inhibited = true;
 }
 
 
 
 
 
-Bot.prototype.applyOperator["output"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["output"] = function (input, ruleLine) {
 
-    if (!bot.state.inhibited)
-        bot.state.outputCandidates.push(bot.outputify(ruleLine));
+    if (!this.state.inhibited)
+        this.state.outputCandidates.push(this.outputify(ruleLine));
 }
 
 
 
 
 
-Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["selfput"] = function (input, ruleLine) {
 
-    if (!bot.state.inhibited)   
+    if (!this.state.inhibited)   
         setTimeout(() => {
-            bot.input(bot.outputify(ruleLine));
-        }, bot.selfputTimeout);
+            this.input(this.outputify(ruleLine));
+        }, this.selfputTimeout);
 }
 
 
 
 
 
-Bot.prototype.applyOperator["if"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["if"] = function (input, ruleLine) {
 
-    if (bot.state.inhibited) return;
+    if (this.state.inhibited) return;
 
-    let found = bot.iterateDb(ruleLine);
+    let found = this.iterateDb(ruleLine);
 
-    if (!found) bot.state.inhibited = true;
+    if (!found) this.state.inhibited = true;
 }
 
 
 
 
 
-Bot.prototype.applyOperator["not"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["not"] = function (input, ruleLine) {
 
-    if (bot.state.inhibited) return;
+    if (this.state.inhibited) return;
 
-    bot.applyOperator["if"](input, ruleLine, bot);
-    bot.state.inhibited = !bot.state.inhibited;
+    this.applyOperator["if"].call(this, input, ruleLine);
+    this.state.inhibited = !this.state.inhibited;
 }
 
 
 
 
 
-Bot.prototype.applyOperator["add"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 
-    if (!bot.state.inhibited)
-        bot.state.addToDb.unshift(bot.outputify(ruleLine));
+    if (!this.state.inhibited)
+        this.state.addToDb.unshift(this.dataize(ruleLine));
+
+    displayNeedRefresh();
 }
 
 
 
 
 
-Bot.prototype.applyOperator["remove"] = function (input, ruleLine, bot) {
+Bot.prototype.applyOperator["remove"] = function (input, ruleLine) {
 
-    if (!bot.state.inhibited)
-        bot.iterateDb(ruleLine, true);
+    if (!this.state.inhibited)
+        this.iterateDb(ruleLine, true);
+
+    displayNeedRefresh();
 }
 
 

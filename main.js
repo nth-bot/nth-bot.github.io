@@ -14,7 +14,7 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
     greetings: 'Ready',
     name: 'term',
     prompt: '',
-    historySize: 100
+    historySize: 1000
 });
 
 
@@ -64,7 +64,11 @@ var codeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
 });
 
 
+codeMirror.on("change", displayNeedRefresh);
+
+
 Split([".CodeMirror", "#terminal"], {
+    sizes: [70, 30],
     gutterSize: 8,
     direction: "vertical",
     elementStyle: function (dimension, size, gutterSize) {

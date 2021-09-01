@@ -20,9 +20,12 @@ window.onload = function() {
 
         let name = prompt("LOCALSTORAGE\nLoad from path");
 
-        if (ui.s().includes(name)) ui.e(ui.e() + '\n' + ui.s(name));
+        if (ui.s().includes(name)) {
+            
+            ui.e(ui.e() + '\n' + ui.s(name));
+            displayNeedRefresh();
 
-        else alert('LOCALSTORAGE\nUnknown path "' + name + '"');
+        } else alert('LOCALSTORAGE\nUnknown path "' + name + '"');
     });
 
 
@@ -39,6 +42,7 @@ window.onload = function() {
     ui.b("Dump", function() {
 
         ui.e(bot.db.join(''));
+        displayDoneRefresh();
     });
 
 
@@ -47,6 +51,7 @@ window.onload = function() {
 
         bot.db = [];
         bot.load(ui.e());
+        displayDoneRefresh();
     });
 
 
@@ -90,20 +95,32 @@ window.onload = function() {
 
         window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
     });
-
-
-
-    
+   
 
     ui.e(bot.db.join(''));
+
+    displayDoneRefresh();
 }
 
 
 
+function displayNeedRefresh() {
+
+    $("#Refresh").addClass("underline");
+    $("#Dump").addClass("underline");
+}
+
+function displayDoneRefresh() {
+
+    $("#Refresh").removeClass("underline");
+    $("#Dump").removeClass("underline");
+}
+
 
 let source = `
 
-# Minimal
+# Source code
+
 < hello
 > hi
 
