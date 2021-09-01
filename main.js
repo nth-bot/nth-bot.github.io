@@ -26,7 +26,7 @@ CodeMirror.defineSimpleMode("mymode", {
     start: [
         { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
 
-        { regex: /\[/, token: "insertion", push: "insertion" },
+        { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
 
         { regex: /[-+\/*@<>]+/, token: "operator" },
@@ -34,14 +34,14 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /#/, token: "operator", next: "delimiter" },
         { regex: /./, token: "normal" }
     ],
-    insertion: [
-        { regex: /\[/, token: "insertion", push: "insertion" },
+    insert: [
+        { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
-        { regex: /\]/, token: "insertion", pop: true },
-        { regex: /./, token: "insertion" }
+        { regex: /\]/, token: "insert", pop: true },
+        { regex: /./, token: "insert" }
     ],
     capture: [
-        { regex: /\[/, token: "insertion", push: "insertion" },
+        { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
         { regex: /\}/, token: "capture", pop: true },
         { regex: /./, token: "capture" }
@@ -60,7 +60,7 @@ var codeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
     indentUnit: 4,
     indentWithTabs: false,
     theme: "blackboard",
-    mode: "mymode"
+    mode: "mymode",
 });
 
 

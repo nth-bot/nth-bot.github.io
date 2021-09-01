@@ -21,7 +21,7 @@
 body {
     background: #202020;
     color: #C0C0C0;
-    font-family: Roboto;
+    font-family: Inconsolata;
     overflow: hidden;
     width: 100vw;
 
@@ -32,13 +32,12 @@ body {
 body * {
     scrollbar-color: #aaa #202020;
     scrollbar-width: thin;
-    font-variant: small-caps;
 }
 
 
 .CodeMirror, #terminal, #terminal * {
     color: unset;
-    font-family: Roboto;
+    font-family: inherit;
     background: transparent;
     line-height: 1.25em;
     font-size: 16px;
@@ -56,6 +55,8 @@ body * {
     outline: none;
     border: none;
     height:unset;
+    padding-left: 5px;
+    box-sizing: border-box;
 }
 
 
@@ -72,7 +73,7 @@ body * {
     font-size: 14px;
     padding: 0 10px;
     width: 100vw;
-    overflow-x: scroll;
+    overflow-x: hidden;
     overflow-y: hidden;
     white-space: nowrap;
     scrollbar-width: none;
@@ -119,6 +120,7 @@ body * {
     font-size: 14px;
 }
 
+
 #text-background {
     position: fixed;
     bottom: 50vh;
@@ -142,10 +144,6 @@ body * {
 .CodeMirror-linenumber {
     color: #404040;
     padding-right: 1em;
-}
-
-.CodeMirror-lines span {
-    padding-left: 0.25em;
 }
 
 .CodeMirror-gutters{
@@ -173,9 +171,9 @@ body * {
     color: white;
 }
 
-.cm-insertion {
+.cm-insert {
     color: #C0C0FF;
-    text-shadow: 0 0 10px rgba(56,139,253,0.333);
+    text-shadow: 0 0 10px rgba(88, 116, 155, 0.5);
 }
 
 .cm-capture {
