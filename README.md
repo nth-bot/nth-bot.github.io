@@ -1,6 +1,6 @@
 # NthBOT
 
-Welcome to Zero's NthBOT, a minimalist &amp; 'not too high' chatbot engine.
+Welcome to NthBOT, a minimalist &amp; 'not too high' chatbot engine.
 
 Download and use locally, or try it online:
 
@@ -9,7 +9,7 @@ Download and use locally, or try it online:
 [![](https://github.com/nth-bot/nth-bot.github.io/raw/main/small-android.png)](https://nth-bot.github.io/)
 
 
-    Welcome to Zero's NthBOT, a minimalist & 'not too high' chatbot engine.
+    Welcome to NthBOT, a minimalist & 'not too high' chatbot engine.
 
         op    type         description
         --    ----         -----------
