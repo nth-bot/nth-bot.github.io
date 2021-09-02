@@ -15,7 +15,8 @@ function Bot(options) {
         variables: {},
         addToDb: [],
         dbAfterRemove: [],
-        outputCandidates: []
+        outputCandidates: [],
+        selfputCandidates: []
     };
 }
 
@@ -25,7 +26,7 @@ function Bot(options) {
 
 Bot.prototype.load = function (source) {
 
-    let stringParsed = stringParser.parse(source);
+    let stringParsed = stringParser.parse(source + '\n');
 
     this.db = this.db.concat(stringParsed);
 }
@@ -73,7 +74,7 @@ Bot.prototype.step = function () {
         for (let datum of this.db) {
 
             let parsed;
-            try { parsed = ruleParser.parse(datum.trim()); }
+            try { parsed = ruleParser.parse(datum.trim() + '\n'); }
             catch (e) { }
 
             if (parsed)
@@ -94,6 +95,14 @@ Bot.prototype.step = function () {
         this.output(this.state.outputCandidates[chosen]);
 
         this.state.outputCandidates = [];
+    }
+
+    if (this.state.selfputCandidates.length) {
+
+        let msg = this.state.selfputCandidates.slice(0);
+        setTimeout(() => { this.inputQueue = this.inputQueue.concat(msg); }, this.selfputTimeout);
+
+        this.state.selfputCandidates = [];
     }
 
     if (this.running)
@@ -196,8 +205,9 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast) {
 Bot.prototype.dataize = function(ruleLine) {
 
     let strLine = this.outputify(ruleLine);
+    let parsed = ruleParser.parse(strLine + '\n');
 
-    if (ruleParser.parse(strLine)[0].operator === "none")
+    if (!parsed || parsed[0].operator === "none")
         strLine = "# " + strLine;
     
     return strLine;
@@ -257,10 +267,14 @@ Bot.prototype.applyOperator["output"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["selfput"] = function (input, ruleLine) {
 
+    if (!this.state.inhibited)
+        this.state.selfputCandidates.push(this.outputify(ruleLine));
+
+    /*
     if (!this.state.inhibited)   
         setTimeout(() => {
             this.input(this.outputify(ruleLine));
-        }, this.selfputTimeout);
+        }, this.selfputTimeout);*/
 }
 
 

@@ -57,6 +57,7 @@ body * {
     height:unset;
     padding-left: 5px;
     box-sizing: border-box;
+    color: #C0C0C0;
 }
 
 
@@ -173,7 +174,7 @@ body * {
 
 .cm-insert {
     color: #C0C0FF;
-    text-shadow: 0 0 10px rgba(88, 116, 155, 0.5);
+    background: rgba(88, 116, 155, 0.2);
 }
 
 .cm-capture {
