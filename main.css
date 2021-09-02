@@ -1,7 +1,7 @@
 
 
 @font-face {
-    font-family: 'Inconsolata';
+    font-family: 'Monoid';
     src: url('./Monoid-Regular.ttf')  format('truetype');
 }
 
@@ -21,7 +21,7 @@
 body {
     background: #202020;
     color: #C0C0C0;
-    font-family: Inconsolata;
+    font-family: Monoid;
     overflow: hidden;
     width: 100vw;
 
@@ -178,7 +178,7 @@ body * {
 }
 
 .cm-delimiter {
-    color: #80C080;
+    color: #80E080;
 }
 
 .cm-operator {
