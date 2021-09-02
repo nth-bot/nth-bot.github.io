@@ -65,6 +65,7 @@ body * {
     background: #000000;
     cursor: ns-resize;
 }
+/*
 .gutter::after{
     content: "⬍";
     font-size: 5rem;
@@ -78,7 +79,7 @@ body * {
     color: #000000;
     pointer-events: none;
 }
-
+*/
 
 #toolbar {
     line-height: var(--toolbar-height);
