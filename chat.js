@@ -128,7 +128,8 @@ let source = `
 
 let bot = new Bot({
     output: (txt) => { ui.t(txt.trim()); },
-    selfputTimeout: 500
+    selfputTimeout: 100,
+    interval: 20
 });
 
 bot.load(source);

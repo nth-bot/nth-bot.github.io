@@ -129,7 +129,11 @@ Bot.prototype.outputify = function (content) {
             result += this.outputify(item.content) || '';
     }
 
-    return result;
+    let parsed;
+    try { parsed = mathParser.parse(result.trim()); }
+    catch(e) {}
+
+    return (parsed || result).toString();
 }
 
 
@@ -269,12 +273,6 @@ Bot.prototype.applyOperator["selfput"] = function (input, ruleLine) {
 
     if (!this.state.inhibited)
         this.state.selfputCandidates.push(this.outputify(ruleLine));
-
-    /*
-    if (!this.state.inhibited)   
-        setTimeout(() => {
-            this.input(this.outputify(ruleLine));
-        }, this.selfputTimeout);*/
 }
 
 
