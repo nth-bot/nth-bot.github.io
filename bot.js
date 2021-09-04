@@ -72,14 +72,14 @@ Bot.prototype.step = function () {
         let input = this.inputQueue.shift();
 
         for (let datum of this.db) {
-
+            
             let parsed;
             try { parsed = ruleParser.parse(datum.trim() + '\n'); }
             catch (e) { }
 
             if (parsed)
                 for (let rule of parsed)
-                    this.applyOperator[rule.operator].call(this, input, rule.line);
+                    this.applyOperator[rule.operator].call(this, input, rule.line, rule.timeout);
         }
         if (this.state.dbAfterRemove.length) {
             this.db = this.state.dbAfterRemove;
@@ -269,10 +269,22 @@ Bot.prototype.applyOperator["output"] = function (input, ruleLine) {
 
 
 
-Bot.prototype.applyOperator["selfput"] = function (input, ruleLine) {
+Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
 
-    if (!this.state.inhibited)
-        this.state.selfputCandidates.push(this.outputify(ruleLine));
+    if (!this.state.inhibited) {
+
+        if (timeout) {
+
+            setTimeout(() => {
+
+                bot.input(bot.outputify(ruleLine));
+            }, timeout * 1000);
+    
+        } else {
+
+            this.state.selfputCandidates.push(this.outputify(ruleLine));
+        }
+    }
 }
 
 

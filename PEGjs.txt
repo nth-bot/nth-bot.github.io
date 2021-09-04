@@ -21,7 +21,14 @@ Block
 
 
 Rule
-= op:Operator _ l:Line _* {
+= op:'@' _ sec:[0-9]+ _ l:Line _* {
+	return {
+    	line: l,
+        timeout: sec,
+        operator: "selfput"
+    };
+}
+/ op:Operator _ l:Line _* {
 
     return {
         line: l,
@@ -79,7 +86,7 @@ Char
 / ']' c:']'+ { return c.join(''); }
 / '{' c:'{'+ { return c.join(''); }
 / '}' c:'}'+ { return c.join(''); }
-/ c1:[\#\<\>\@\*\/\+\-\{\}\[\]] c2:[^ \t\r\n] { return c1 + c2; }
+/ c1:[\#\<\>\@\*\/\+\-] c2:[^ \t\r\n] { return c1 + c2; }
 
 
 
@@ -197,3 +204,51 @@ Char
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+=================================================== mathParser
+
+
+
+Line
+= lc:LineContent* { return lc.join(''); }
+
+
+LineContent
+= MathExpr
+/ Other
+
+
+MathExpr
+= '(' op:('+' / '-' / '*' / '/') n:(Number / MathExpr)+ ')' {
+
+	let reducer = {
+    	'+': (accumulator, currentValue) => accumulator + currentValue,
+    	'-': (accumulator, currentValue) => accumulator - currentValue,
+    	'*': (accumulator, currentValue) => accumulator * currentValue,
+    	'/': (accumulator, currentValue) => accumulator / currentValue,
+    }[op];
+    return n.reduce(reducer);
+}
+
+
+Other
+= c:[^\(]+ { return c.join(''); }
+/ c1:'(' c2:[^\+\-\*\/] { return c1 + c2; }
+
+
+Number
+= _* c:[0-9.\-e]+ _* { return parseFloat(c.join('')); }
+
+
+_
+= [ \t\r\n]
