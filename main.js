@@ -29,9 +29,12 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
 
+        { regex: /\([\+\-\*\/]/, token: "math", push: "math" },
+
         { regex: /[-+\/*@<>]+/, token: "operator" },
 
         { regex: /#/, token: "operator", next: "delimiter" },
+
         { regex: /./, token: "normal" }
     ],
     insert: [
@@ -47,9 +50,16 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /./, token: "capture" }
     ],
     delimiter: [
+        { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
         { regex: /[-+\/*@<>]+/, token: "operator", next: "start" },
         { regex: /#/, token: "operator" },
         { regex: /./, token: "delimiter" }
+    ],
+    math: [
+        { regex: /\[/, token: "insert", push: "insert" },
+        { regex: /\{/, token: "capture", push: "capture" },
+        { regex: /\)/, token: "math", pop: true },
+        { regex: /./, token: "math" }
     ],
     meta: {
     }
@@ -68,12 +78,12 @@ codeMirror.on("change", displayNeedRefresh);
 
 
 Split([".CodeMirror", "#terminal"], {
-    sizes: [70, 30],
-    gutterSize: 8,
+    sizes: [75, 25],
+    gutterSize: 6,
     direction: "vertical",
     elementStyle: function (dimension, size, gutterSize) {
         return {
-            'height': 'calc(' + size + 'vh - ' + gutterSize + 'px - 2em)',
+            'height': 'calc(' + size + 'vh - ' + gutterSize + 'px - 2em)'
         }
     },
 });

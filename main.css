@@ -186,13 +186,18 @@ body * {
     color: white;
 }
 
-.cm-insert {
+.cm-math {
     color: #D0D0FF;
     background: rgba(88, 116, 155, 0.2);
+    border-radius: 0.25em;
 }
 
 .cm-capture {
     color: #F0A000;
+}
+
+.cm-insert {
+    color: cornflowerblue; /* cause waste is a thief */
 }
 
 .underline {

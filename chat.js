@@ -11,14 +11,16 @@ window.onload = function() {
         list = list
             .filter(item => !item.includes("term_0_"))
             .map(item => "- "+item);
-        alert("LOCALSTORAGE\nList of saved editors:\n" + list.join('\n'));
+        alert("LOCALSTORAGE\nList of saved scripts:\n" + list.join('\n'));
     });
 
 
 
-    ui.b("Load", function() {
+    ui.b("Open", function() {
 
-        let name = prompt("LOCALSTORAGE\nLoad from path");
+        let name = prompt("LOCALSTORAGE OPEN\nOpen script");
+
+        if (!name) return;
 
         if (ui.s().includes(name)) {
             
@@ -32,7 +34,9 @@ window.onload = function() {
 
     ui.b("Save", function() {
 
-        let name = prompt("LOCALSTORAGE\nSave to path");
+        let name = prompt("LOCALSTORAGE SAVE\nSave script");
+
+        if (!name) return;
 
         ui.s(name, ui.e());
     });
@@ -47,7 +51,7 @@ window.onload = function() {
 
 
 
-    ui.b("Refresh", function() {
+    ui.b("Load", function() {
 
         bot.db = [];
         bot.load(ui.e());
@@ -60,7 +64,7 @@ window.onload = function() {
 
         ui.e(`
 
-    Welcome to Zero's NthBOT, a minimalist & 'not too high' chatbot engine.
+    Welcome to NthBOT, a minimalist & 'not too high' chatbot engine.
 
         op    type         description
         --    ----         -----------
@@ -75,14 +79,14 @@ window.onload = function() {
         -     action       remove from db
         {}    inline       capture
         []    inline       insert
+        ()    inline       math /prefix
         
     In the toolbar:
-    - Clear, clears the terminal
     - List, shows a list of editors saved in the browser's Localstorage
-    - Load, loads an editor from the browser's Localstorage
+    - Open, opens an editor from the browser's Localstorage
     - Save, saves the current editor to the browser's Localstorage
     - Dump, writes in the editor the current content of the bot's database
-    - Refresh, replaces the bot's database by the current editor
+    - Load, replaces the bot's database by the current editor
     - Help, shows this help file in the editor
     - Doc, opens the NthBOT documentation page on Github
 
@@ -106,13 +110,13 @@ window.onload = function() {
 
 function displayNeedRefresh() {
 
-    $("#Refresh").addClass("underline");
+    $("#Load").addClass("underline");
     $("#Dump").addClass("underline");
 }
 
 function displayDoneRefresh() {
 
-    $("#Refresh").removeClass("underline");
+    $("#Load").removeClass("underline");
     $("#Dump").removeClass("underline");
 }
 
