@@ -12,7 +12,7 @@ window.onload = function() {
             .filter(item => !item.includes("term_0_"))
             .map(item => "- "+item);
         alert("LOCALSTORAGE\nList of saved scripts:\n" + list.join('\n'));
-    });
+    }, "Shows a list of editors saved in the browser's Localstorage");
 
 
 
@@ -28,7 +28,7 @@ window.onload = function() {
             displayNeedRefresh();
 
         } else alert('LOCALSTORAGE\nUnknown path "' + name + '"');
-    });
+    }, "Opens an editor from the browser's Localstorage");
 
 
 
@@ -39,7 +39,7 @@ window.onload = function() {
         if (!name) return;
 
         ui.s(name, ui.e());
-    });
+    }, "Saves the current editor to the browser's Localstorage");
 
 
 
@@ -47,7 +47,7 @@ window.onload = function() {
 
         ui.e(bot.db.join(''));
         displayDoneRefresh();
-    });
+    }, "Writes in the editor the current content of the bot's database");
 
 
 
@@ -56,21 +56,21 @@ window.onload = function() {
         bot.db = [];
         bot.load(ui.e());
         displayDoneRefresh();
-    });
+    }, "Replaces the bot's database by the current editor");
 
 
 
     ui.b("Disc", function() {
 
         window.open("https://github.com/nth-bot/nth-bot.github.io/discussions", "_blank");
-    });
+    }, "Opens the NthBOT discussion page on Github");
 
 
 
     ui.b("Doc", function() {
 
         window.open("https://github.com/nth-bot/nth-bot.github.io/wiki", "_blank");
-    });
+    }, "Opens the NthBOT documentation page on Github");
    
 
     ui.e(bot.db.join(''));
