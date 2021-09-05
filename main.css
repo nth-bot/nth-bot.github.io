@@ -207,6 +207,10 @@ body * {
     text-decoration: underline;
 }
 
+#side-log {
+    display: none;
+}
+
 @media screen and (min-width: 960px) {
 
     #main-container {
@@ -216,6 +220,7 @@ body * {
     }
 
     #side-log {
+        display: block;
         position: fixed;
         top: 0;
         left: 0;

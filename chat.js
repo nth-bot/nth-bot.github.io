@@ -104,6 +104,23 @@ let source = `
 
 `;
 
+
+window.translate = {
+    "variable": { fr: "variable" },
+    "input": { fr: "entrée" },
+    "output": { fr: "sortie" },
+    "selfput": { fr: "auto-message" },
+    "add to db": { fr: "ajout bdd" },
+    "if pattern": { fr: "pattern si" },
+    "match": { fr: "correspondance" },
+    "not pattern": { fr: "pattern non" },
+    "remove pattern": { fr: "pattern effacement" },
+};
+
+
+window.tr = function(txt) { return navigator.languages.includes("fr") ? translate[txt].fr : txt };
+
+
 let bot = new Bot({
     output: (txt) => {
         ui.t(txt.trim());
@@ -113,7 +130,7 @@ let bot = new Bot({
         //let time = $("#time").text();
         let html = '';
         //html += `<span class="log-event">[${time}] ${data.event.toUpperCase()}: </span> `;
-        html += `<span class="log-event">[${data.event}] </span> `;
+        html += `<span class="log-event">[${tr(data.event)}] </span> `;
         html += `<span class="log-content">${data.content}</span> `;
         html += "<br>";
         let sl = $("#side-log");
