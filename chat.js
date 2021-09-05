@@ -60,44 +60,16 @@ window.onload = function() {
 
 
 
-    ui.b("Help", function() {
+    ui.b("Disc", function() {
 
-        ui.e(`
-
-    Welcome to NthBOT, a minimalist & 'not too high' chatbot engine.
-
-        op    type         description
-        --    ----         -----------
-        
-        #     delimiter    rule
-        <     condition    input
-        >     action       output
-        @     action       selfput
-        *     condition    is in db
-        /     condition    is not in db
-        +     action       add to db
-        -     action       remove from db
-        {}    inline       capture
-        []    inline       insert
-        ()    inline       math /prefix
-        
-    In the toolbar:
-    - List, shows a list of editors saved in the browser's Localstorage
-    - Open, opens an editor from the browser's Localstorage
-    - Save, saves the current editor to the browser's Localstorage
-    - Dump, writes in the editor the current content of the bot's database
-    - Load, replaces the bot's database by the current editor
-    - Help, shows this help file in the editor
-    - Doc, opens the NthBOT documentation page on Github
-
-        `);
+        window.open("https://github.com/nth-bot/nth-bot.github.io/discussions", "_blank");
     });
 
 
 
     ui.b("Doc", function() {
 
-        window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
+        window.open("https://github.com/nth-bot/nth-bot.github.io/wiki", "_blank");
     });
    
 
