@@ -105,7 +105,10 @@ let source = `
 `;
 
 let bot = new Bot({
-    output: (txt) => { ui.t(txt.trim()); },
+    output: (txt) => {
+        ui.t(txt.trim());
+        bot.log({ event: "output", content: '<br>' + txt.trim() });
+    },
     log: (data) => {
         //let time = $("#time").text();
         let html = '';

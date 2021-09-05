@@ -5,6 +5,7 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
     if (command !== '') {
         try {
             bot.input(command);
+            bot.log({ event: "input", content: '<br>' + command });
         } catch (e) {
             this.echo(e.message);
             this.echo("Ready");
