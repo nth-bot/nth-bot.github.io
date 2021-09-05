@@ -66,21 +66,7 @@ body * {
     background: #000000;
     cursor: ns-resize;
 }
-/*
-.gutter::after{
-    content: "⬍";
-    font-size: 5rem;
-    position: relative;
-    left: 0;
-    top: -1px;
-    line-height: 0rem;
-    width: 100vw;
-    text-align: center;
-    display: block;
-    color: #000000;
-    pointer-events: none;
-}
-*/
+
 
 #toolbar {
     line-height: var(--toolbar-height);

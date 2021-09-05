@@ -99,14 +99,14 @@ var ui = {
             console.error(e.message);
         }
     },
-    b: function (name, code) { // buttons
+    b: function (name, code, title) { // buttons
         try {
             if (typeof code == "undefined") {
                 document.getElementById(name).outerHTML = '';
                 delete ui.toolbarButtons[name];
             } else {
                 document.getElementById("toolbar").innerHTML +=
-                    `<span id="${name}" class="button" onclick="ui.toolbarButtons['${name}']()">${name}</span>`;
+                    `<span id="${name}" title="${title}" class="button" onclick="ui.toolbarButtons['${name}']()">${name}</span>`;
                 ui.toolbarButtons[name] = code;
             }
         } catch (e) {
