@@ -6,6 +6,7 @@ function Bot(options) {
     this.db = [];
     this.interval = 100;
     this.output = (txt) => { document.body.innerHTML += txt + "<br>"; };
+    this.log = (data) => { console.log(data); };
     this.selfputTimeout = 1000;
 
     Object.assign(this, options);
@@ -100,6 +101,7 @@ Bot.prototype.step = function () {
     if (this.state.selfputCandidates.length) {
 
         let msg = this.state.selfputCandidates.slice(0);
+        this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
         setTimeout(() => { this.inputQueue = this.inputQueue.concat(msg); }, this.selfputTimeout);
 
         this.state.selfputCandidates = [];
@@ -178,7 +180,7 @@ Bot.prototype.buildRegexp = function (ruleLine) {
 
 
 
-Bot.prototype.iterateDb = function (ruleLine, removeLast) {
+Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
     let last = false;
     let { varNames, regexp } = this.buildRegexp(ruleLine);
@@ -189,9 +191,13 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast) {
 
         if (captures) {
 
-            for (let v = 0; v < varNames.length; v++)
-                this.state.variables[varNames[v]] = captures[v + 1];
+            this.log({ event: eventName + " pattern", content: regexp.toString() });
+            this.log({ event: "match", content: item });
 
+            for (let v = 0; v < varNames.length; v++) {
+                this.state.variables[varNames[v]] = captures[v + 1];
+                this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1]});
+            }
             last = item;
         }
     }
@@ -249,8 +255,10 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
     let captures = input.trim().match(regexp);
 
     if (captures)
-        for (let v = 0; v < varNames.length; v++)
+        for (let v = 0; v < varNames.length; v++) {
             this.state.variables[varNames[v]] = captures[v + 1];
+            this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1]});
+        }
     else
         this.state.inhibited = true;
 }
@@ -276,8 +284,9 @@ Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
         if (timeout) {
 
             setTimeout(() => {
-
-                bot.input(bot.outputify(ruleLine));
+                let msg = bot.outputify(ruleLine);
+                this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
+                bot.input(msg);
             }, timeout * 1000);
     
         } else {
@@ -291,11 +300,11 @@ Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
 
 
 
-Bot.prototype.applyOperator["if"] = function (input, ruleLine) {
+Bot.prototype.applyOperator["if"] = function (input, ruleLine, eventName) {
 
     if (this.state.inhibited) return;
 
-    let found = this.iterateDb(ruleLine);
+    let found = this.iterateDb(ruleLine, false, eventName || "if");
 
     if (!found) this.state.inhibited = true;
 }
@@ -308,7 +317,7 @@ Bot.prototype.applyOperator["not"] = function (input, ruleLine) {
 
     if (this.state.inhibited) return;
 
-    this.applyOperator["if"].call(this, input, ruleLine);
+    this.applyOperator["if"].call(this, input, ruleLine, "not");
     this.state.inhibited = !this.state.inhibited;
 }
 
@@ -318,8 +327,13 @@ Bot.prototype.applyOperator["not"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 
-    if (!this.state.inhibited)
-        this.state.addToDb.unshift(this.dataize(ruleLine));
+    if (!this.state.inhibited) {
+
+        let data = this.dataize(ruleLine);
+        this.log({ event: "add to db", content: '<br>' + data });
+
+        this.state.addToDb.unshift(data);
+    }
 
     displayNeedRefresh();
 }
@@ -331,7 +345,7 @@ Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 Bot.prototype.applyOperator["remove"] = function (input, ruleLine) {
 
     if (!this.state.inhibited)
-        this.iterateDb(ruleLine, true);
+        this.iterateDb(ruleLine, true, "remove");
 
     displayNeedRefresh();
 }

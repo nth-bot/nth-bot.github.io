@@ -95,6 +95,8 @@ function displayDoneRefresh() {
 
 let source = `
 
+
+
 # Source code
 
 < hello
@@ -104,6 +106,17 @@ let source = `
 
 let bot = new Bot({
     output: (txt) => { ui.t(txt.trim()); },
+    log: (data) => {
+        //let time = $("#time").text();
+        let html = '';
+        //html += `<span class="log-event">[${time}] ${data.event.toUpperCase()}: </span> `;
+        html += `<span class="log-event">[${data.event}] </span> `;
+        html += `<span class="log-content">${data.content}</span> `;
+        html += "<br>";
+        let sl = $("#side-log");
+        sl[0].innerHTML += html;
+        setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);
+    },
     selfputTimeout: 100,
     interval: 20
 });

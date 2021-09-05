@@ -35,6 +35,20 @@ body * {
 }
 
 
+::-webkit-scrollbar {
+    width: 8px; 
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #202020;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #aaa;
+}
+
+
 .CodeMirror, #terminal, #terminal * {
     color: unset;
     font-family: inherit;
@@ -45,18 +59,18 @@ body * {
 
 
 #terminal {
-    width: 100vw !important;
+    width: 100% !important;
 }
 
 
 .CodeMirror {
-    width: 100vw;
+    width: 100%;
     resize: none;
     outline: none;
     border: none;
     height:unset;
     padding-left: 5px;
-    padding-top: var(--toolbar-height);
+    margin-top: var(--toolbar-height);
     box-sizing: border-box;
     color: #C0C0C0;
 }
@@ -137,6 +151,7 @@ body * {
     transform: translate(50%, 50%) rotate(-45deg);
     color: #282828;
     font-variant: small-caps;
+    user-select: none;
 }
 
 .CodeMirror-cursor {
@@ -190,4 +205,42 @@ body * {
 
 .underline {
     text-decoration: underline;
+}
+
+@media screen and (min-width: 960px) {
+
+    #main-container {
+        width: 75vw;
+        position: absolute;
+        right: 0;
+    }
+
+    #side-log {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 25vw;
+        border-right: 6px solid black;
+        box-sizing: border-box;
+        padding-top: var(--toolbar-height);
+        padding-left: 5px;
+        font-family: Monoid;
+        font-size: 12px;
+        overflow-y: scroll;
+        line-height: 1.5em;
+    }
+
+    .log-event {
+        color: indianred;
+    }
+
+    .log-content {
+        color: #C0C0C0;
+    }
+
+    .CodeMirror-scrollbar-filler {
+        background-color: #202020;
+    }
+    
 }
