@@ -31,7 +31,7 @@ Download and use locally, or try it online:
     - Save, saves the current editor to the browser's Localstorage
     - Dump, writes in the editor the current content of the bot's database
     - Load, replaces the bot's database by the current editor
-    - Help, shows this help file in the editor
+    - Disc, opens the NthBOT discussion page on Github
     - Doc, opens the NthBOT documentation page on Github
         
 ## Documentation
