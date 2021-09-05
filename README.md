@@ -26,11 +26,11 @@ Download and use locally, or try it online:
         ()    inline       math /prefix
         
     In the toolbar:
-    - List, shows a list of editors saved in the browser's Localstorage
-    - Open, opens an editor from the browser's Localstorage
-    - Save, saves the current editor to the browser's Localstorage
-    - Dump, writes in the editor the current content of the bot's database
-    - Load, replaces the bot's database by the current editor
+    - List, shows a list of scripts saved in the browser's Localstorage
+    - Open, opens a script from the browser's Localstorage
+    - Save, saves the current script to the browser's Localstorage
+    - Dump, replaces the current script by the content of the bot's database
+    - Load, replaces the bot's database by the current script
     - Disc, opens the NthBOT discussion page on Github
     - Doc, opens the NthBOT documentation page on Github
         
