@@ -32,6 +32,7 @@ body {
 body * {
     scrollbar-color: #aaa #202020;
     scrollbar-width: thin;
+    scroll-behavior: smooth;
 }
 
 
