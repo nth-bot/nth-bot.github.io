@@ -32,7 +32,6 @@ body {
 body * {
     scrollbar-color: #aaa #202020;
     scrollbar-width: thin;
-    scroll-behavior: smooth;
 }
 
 
@@ -235,6 +234,7 @@ body * {
         font-size: 12px;
         overflow-y: scroll;
         line-height: 1.5em;
+        scroll-behavior: smooth;
     }
 
     .log-event {
