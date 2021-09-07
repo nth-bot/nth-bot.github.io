@@ -97,10 +97,10 @@ let source = `
 
 
 
-# Source code
+# Script
 
-< hello
-> hi
+< bonjour
+> hello world
 
 `;
 
@@ -109,12 +109,12 @@ window.translate = {
     "variable": { fr: "variable" },
     "input": { fr: "entrée" },
     "output": { fr: "sortie" },
-    "selfput": { fr: "auto-message" },
+    "selfput": { fr: "réflexion" },
     "add to db": { fr: "ajout bdd" },
     "if pattern": { fr: "pattern si" },
     "match": { fr: "correspondance" },
     "not pattern": { fr: "pattern non" },
-    "remove pattern": { fr: "pattern effacement" },
+    "remove pattern": { fr: "pattern oubli" },
 };
 
 
