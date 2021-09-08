@@ -43,9 +43,20 @@ window.onload = function() {
 
         try {
             portal.from("scripts").select().eq("title", name).then(function(data) {
-                ui.e(ui.e() + '\n' + data.body[0].script);
-                displayNeedRefresh();
-                console.log("[downloaded]", data);
+                if (data.body[0]) {
+                    ui.e(ui.e() + '\n' + data.body[0].script);
+                    displayNeedRefresh();
+                    console.log("[downloaded]", data);
+                } else {
+                    if (ui.s().includes(name)) {
+            
+                        ui.e(ui.e() + '\n' + ui.s(name));
+                        displayNeedRefresh();
+            
+                    } else {
+                        alert('OPEN\nUnknown path "' + name + '"');    
+                    }
+                }
             });
         } catch(e) {
             if (ui.s().includes(name)) {
