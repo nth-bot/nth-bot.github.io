@@ -182,10 +182,15 @@ Bot.prototype.buildRegexp = function (ruleLine) {
 
 Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
-    let last = false;
+    let last = -1;
     let { varNames, regexp } = this.buildRegexp(ruleLine);
 
-    for (let item of bot.db) {
+    console.log(ruleLine);
+    console.log(stringParser.parse(this.outputify(ruleLine)));
+
+    for (let i = 0; i < bot.db.length; i++) {
+
+        let item = bot.db[i];
 
         let captures = item.trim().match(regexp);
 
@@ -198,14 +203,24 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
                 this.state.variables[varNames[v]] = captures[v + 1];
                 this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1]});
             }
-            last = item;
+            last = i;
         }
     }
 
-    if (removeLast && last)
-        bot.state.dbAfterRemove = bot.db.filter(item => item !== last);
+    if (removeLast && last >= 0) {
 
-    return !!last;
+        let keep = true;
+
+        for (let i = 0; i < bot.db.length; i++) {
+
+            if (ruleParser.parse(bot.db[i])[0].operator === "delimiter") keep = true;
+            if (i === last) keep = false;
+
+            if (keep) bot.state.dbAfterRemove.push(bot.db[i]);
+        }
+    }
+
+    return last >= 0;
 }
 
 
