@@ -185,9 +185,6 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
     let last = -1;
     let { varNames, regexp } = this.buildRegexp(ruleLine);
 
-    console.log(ruleLine);
-    console.log(stringParser.parse(this.outputify(ruleLine)));
-
     for (let i = 0; i < bot.db.length; i++) {
 
         let item = bot.db[i];
