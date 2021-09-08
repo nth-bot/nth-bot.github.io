@@ -26,9 +26,9 @@ Download and use locally, or try it online:
         ()    inline       math /prefix
         
     In the toolbar:
-    - List, shows a list of scripts saved in the browser's Localstorage
-    - Open, opens a script from the browser's Localstorage
-    - Save, saves the current script to the browser's Localstorage
+    - List, shows a list of available scripts
+    - Open, opens a script from the browser's Localstorage or from the cloud
+    - Save, saves the current script to the browser's Localstorage and in the cloud
     - Dump, replaces the current script by the content of the bot's database
     - Load, replaces the bot's database by the current script
     - Disc, opens the NthBOT discussion page on Github
