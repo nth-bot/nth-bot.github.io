@@ -1,17 +1,36 @@
 
 
 
+function updateScriptList() {
+
+    let localList = ui.s();
+    localList = localList
+        .filter(item => !item.includes("term_0_"))
+        .map(item => "- "+item);
+    
+    try {
+        portal.from("scripts").select("title").then(function(data) {
+            window.scriptList = data.body.map(item => "- " + item.title);
+            window.scriptList = window.scriptList.concat(localList);
+        });
+    } catch(e) {
+        window.scriptList = localList;
+    }
+}
+
+
+
 window.onload = function() {
 
 
 
-    ui.b("List", function() {
+    updateScriptList();
 
-        let list = ui.s();
-        list = list
-            .filter(item => !item.includes("term_0_"))
-            .map(item => "- "+item);
-        alert("LOCALSTORAGE\nList of saved scripts:\n" + list.join('\n'));
+
+    
+    ui.b("List", function() {
+        
+        alert("LOCALSTORAGE\nList of saved scripts:\n" + window.scriptList.join('\n'));
     }, "Shows a list of available scripts");
 
 
@@ -55,6 +74,8 @@ window.onload = function() {
                 console.log("[uploaded]", data);
             });
         } catch(e) {}
+
+        setTimeout(updateScriptList, 3000);
     
     }, "Saves the current script");
 
@@ -64,7 +85,7 @@ window.onload = function() {
 
         ui.e(bot.db.join(''));
         displayDoneRefresh();
-    }, "Replaces the current script by the content of the bot's database");
+    }, "Shows the bot's database");
 
 
 
@@ -73,7 +94,7 @@ window.onload = function() {
         bot.db = [];
         bot.load(ui.e());
         displayDoneRefresh();
-    }, "Replaces the bot's database by the current script");
+    }, "Loads as bot's database");
 
 
 
