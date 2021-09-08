@@ -30,7 +30,7 @@ body {
 
 
 body * {
-    scrollbar-color: #aaa #202020;
+    scrollbar-color: #808080 #202020;
     scrollbar-width: thin;
 }
 
@@ -45,7 +45,7 @@ body * {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #aaa;
+    background: #808080;
 }
 
 
@@ -205,7 +205,31 @@ body * {
 
 .underline {
     text-decoration: underline;
+    animation: blinking 1s ease-in infinite;
 }
+
+
+@-webkit-keyframes blinking {
+    0% { color: #FFFFFF; }
+    100% { color: #808080; }
+}
+@-moz-keyframes blinking {
+    0% { color: #FFFFFF; }
+    100% { color: #808080; }
+}
+@-ms-keyframes blinking {
+    0% { color: #FFFFFF; }
+    100% { color: #808080; }
+}
+@-o-keyframes blinking {
+    0% { color: #FFFFFF; }
+    100% { color: #808080; }
+}
+@keyframes blinking {
+    0% { color: #FFFFFF; }
+    100% { color: #808080; }
+}
+
 
 #side-log {
     display: none;
@@ -242,7 +266,8 @@ body * {
     }
 
     .log-content {
-        color: #C0C0C0;
+        color: #A0A0A0;
+        font-style: italic;
     }
 
     .CodeMirror-scrollbar-filler {
