@@ -12,40 +12,39 @@ window.onload = function() {
             .filter(item => !item.includes("term_0_"))
             .map(item => "- "+item);
         alert("LOCALSTORAGE\nList of saved scripts:\n" + list.join('\n'));
-    }, "Shows a list of scripts saved in the browser's Localstorage");
+    }, "Shows a list of available scripts");
 
 
 
     ui.b("Open", function() {
 
-        let name = prompt("LOCALSTORAGE OPEN\nOpen script");
+        let name = prompt("OPEN\nOpen script");
 
         if (!name) return;
 
-        if (ui.s().includes(name)) {
+        try {
+            portal.from("scripts").select().eq("title", name).then(function(data) {
+                ui.e(ui.e() + '\n' + data.body[0].script);
+                displayNeedRefresh();
+                console.log("[downloaded]", data);
+            });
+        } catch(e) {
+            if (ui.s().includes(name)) {
             
-            ui.e(ui.e() + '\n' + ui.s(name));
-            displayNeedRefresh();
-
-        } else {
-
-            try {
-                portal.from("scripts").select().eq(title, name).then(function(data) {
-                    ui.e(ui.e() + '\n' + data.body[0].script);
-                    displayNeedRefresh();
-                    console.log("[download]", data);
-                });
-            } catch(e) {
-                alert('LOCALSTORAGE\nUnknown path "' + name + '"');
+                ui.e(ui.e() + '\n' + ui.s(name));
+                displayNeedRefresh();
+    
+            } else {
+                alert('OPEN\nUnknown path "' + name + '"');    
             }
         }
-    }, "Opens a script from the browser's Localstorage");
+    }, "Appends a script to the editor");
 
 
 
     ui.b("Save", function() {
 
-        let name = prompt("LOCALSTORAGE SAVE\nSave script");
+        let name = prompt("SAVE\nSave script");
 
         if (!name) return;
 
@@ -53,11 +52,11 @@ window.onload = function() {
 
         try {
             portal.from("scripts").upsert([{ title: name, script: ui.e() }]).then(function(data) {
-                console.log("[upload]", data);
+                console.log("[uploaded]", data);
             });
         } catch(e) {}
     
-    }, "Saves the current script to the browser's Localstorage");
+    }, "Saves the current script");
 
 
 
