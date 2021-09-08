@@ -27,7 +27,18 @@ window.onload = function() {
             ui.e(ui.e() + '\n' + ui.s(name));
             displayNeedRefresh();
 
-        } else alert('LOCALSTORAGE\nUnknown path "' + name + '"');
+        } else {
+
+            try {
+                portal.from("scripts").select().eq(title, name).then(function(data) {
+                    ui.e(ui.e() + '\n' + data.body[0].script);
+                    displayNeedRefresh();
+                    console.log("[download]", data);
+                });
+            } catch(e) {
+                alert('LOCALSTORAGE\nUnknown path "' + name + '"');
+            }
+        }
     }, "Opens a script from the browser's Localstorage");
 
 
@@ -39,6 +50,13 @@ window.onload = function() {
         if (!name) return;
 
         ui.s(name, ui.e());
+
+        try {
+            portal.from("scripts").upsert([{ title: name, script: ui.e() }]).then(function(data) {
+                console.log("[upload]", data);
+            });
+        } catch(e) {}
+    
     }, "Saves the current script to the browser's Localstorage");
 
 
