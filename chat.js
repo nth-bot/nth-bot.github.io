@@ -30,7 +30,7 @@ window.onload = function() {
     
     ui.b("List", function() {
         
-        alert("LOCALSTORAGE\nList of saved scripts:\n" + window.scriptList.join('\n'));
+        alert("List of available scripts:\n" + window.scriptList.join('\n'));
     }, "Shows a list of available scripts");
 
 
