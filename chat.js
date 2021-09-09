@@ -8,12 +8,16 @@ function updateScriptList() {
         .filter(item => !item.includes("term_0_"))
         .map(item => "- "+item);
     
-    try {
-        portal.from("scripts").select("title").then(function(data) {
-            window.scriptList = data.body.map(item => "- " + item.title);
-            window.scriptList = window.scriptList.concat(localList);
-        });
-    } catch(e) {
+    if (navigator.onLine) {
+        try {
+            portal.from("scripts").select("title").then(function(data) {
+                window.scriptList = data.body.map(item => "- " + item.title);
+                window.scriptList = window.scriptList.concat(localList);
+            });
+        } catch(e) {
+            window.scriptList = localList;
+        }
+    } else {
         window.scriptList = localList;
     }
 }
@@ -41,24 +45,7 @@ window.onload = function() {
 
         if (!name) return;
 
-        try {
-            portal.from("scripts").select().eq("title", name).then(function(data) {
-                if (data.body[0]) {
-                    ui.e(ui.e() + '\n' + data.body[0].script);
-                    displayNeedRefresh();
-                    console.log("[downloaded]", data);
-                } else {
-                    if (ui.s().includes(name)) {
-            
-                        ui.e(ui.e() + '\n' + ui.s(name));
-                        displayNeedRefresh();
-            
-                    } else {
-                        alert('OPEN\nUnknown path "' + name + '"');    
-                    }
-                }
-            });
-        } catch(e) {
+        let open = function(name) {
             if (ui.s().includes(name)) {
             
                 ui.e(ui.e() + '\n' + ui.s(name));
@@ -68,6 +55,25 @@ window.onload = function() {
                 alert('OPEN\nUnknown path "' + name + '"');    
             }
         }
+
+        if (navigator.onLine) {
+            try {
+                portal.from("scripts").select().eq("title", name).then(function(data) {
+                    if (data.body[0]) {
+                        ui.e(ui.e() + '\n' + data.body[0].script);
+                        displayNeedRefresh();
+                        console.log("[downloaded]", data);
+                    } else {
+                        open(name);
+                    }
+                });
+            } catch(e) {
+                open(name);
+            }
+        } else {
+            open(name);
+        }
+
     }, "Appends a script to the editor");
 
 
@@ -80,12 +86,13 @@ window.onload = function() {
 
         ui.s(name, ui.e());
 
-        try {
-            portal.from("scripts").upsert([{ title: name, script: ui.e() }]).then(function(data) {
-                console.log("[uploaded]", data);
-            });
-        } catch(e) {}
-
+        if (navigator.onLine) {
+            try {
+                portal.from("scripts").upsert([{ title: name, script: ui.e() }]).then(function(data) {
+                    console.log("[uploaded]", data);
+                });
+            } catch(e) {}
+        }
         setTimeout(updateScriptList, 3000);
     
     }, "Saves the current script");
