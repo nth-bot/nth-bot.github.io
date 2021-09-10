@@ -32,7 +32,7 @@ CodeMirror.defineSimpleMode("mymode", {
 
         { regex: /\([\+\-\*\/]/, token: "math", push: "math" },
 
-        { regex: /[-+\/*@<>]+/, token: "operator" },
+        { regex: /[-+\/\*@<>][ \t\r\n]/, token: "operator" },
 
         { regex: /#/, token: "operator", next: "delimiter" },
 
@@ -52,7 +52,7 @@ CodeMirror.defineSimpleMode("mymode", {
     ],
     delimiter: [
         { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[-+\/*@<>]+/, token: "operator", next: "start" },
+        { regex: /[-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
         { regex: /#/, token: "operator" },
         { regex: /./, token: "delimiter" }
     ],
@@ -159,3 +159,4 @@ setInterval(function () {
     var time = new Date();
     document.getElementById("time").innerHTML = time.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + ':' + time.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + time.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 });
 }, 1000);
+
