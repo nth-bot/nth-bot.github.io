@@ -115,7 +115,7 @@ Bot.prototype.step = function () {
 
 
 
-Bot.prototype.outputify = function (content) {
+Bot.prototype.outputify = function (content, showCurlies) {
 
     let result = '';
 
@@ -128,7 +128,9 @@ Bot.prototype.outputify = function (content) {
             result += this.state.variables[this.outputify(item.content)] || '';
 
         if (item.type === "capture")
-            result += this.outputify(item.content) || '';
+            result += showCurlies ?
+                '{' + (this.outputify(item.content) || '') + '}' :
+                this.outputify(item.content) || '';
     }
 
     let parsed;
@@ -193,7 +195,7 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
         if (captures) {
 
-            this.log({ event: eventName + " pattern", content: regexp.toString() });
+            this.log({ event: eventName + " pattern", content: this.outputify(ruleLine, true) });
             this.log({ event: "match", content: item });
 
             for (let v = 0; v < varNames.length; v++) {
