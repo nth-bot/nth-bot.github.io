@@ -73,7 +73,7 @@ Bot.prototype.step = function () {
         let input = this.inputQueue.shift();
 
         for (let datum of this.db) {
-            
+
             let parsed;
             try { parsed = ruleParser.parse(datum.trim() + '\n'); }
             catch (e) { }
@@ -86,7 +86,7 @@ Bot.prototype.step = function () {
             this.db = this.state.dbAfterRemove;
             this.state.dbAfterRemove = [];
         }
-        this.load('\n'+this.state.addToDb.join('\n'));
+        this.load('\n' + this.state.addToDb.join('\n'));
         this.state.addToDb = [];
     }
 
@@ -135,7 +135,7 @@ Bot.prototype.outputify = function (content, showCurlies) {
 
     let parsed;
     try { parsed = mathParser.parse(result.trim()); }
-    catch(e) {}
+    catch (e) { }
 
     return (parsed || result).toString();
 }
@@ -153,9 +153,9 @@ Bot.prototype.escapeRegexp = function (str) {
 
 
 
-Bot.prototype.buildRegexp = function (ruleLine) {
+Bot.prototype.buildRegexp = function (ruleLine, appendSharp) {
 
-    let regexpStr = '^';
+    let regexpStr = '';
     let varNames = [];
 
     for (let item of ruleLine)
@@ -173,7 +173,11 @@ Bot.prototype.buildRegexp = function (ruleLine) {
             varNames.push(this.outputify(item.content));
         }
 
-    regexpStr += '$';
+    if (appendSharp)
+        if (!['#', '<', '>', '@', '*', '/', '+', '-'].includes(regexpStr[0]))
+            regexpStr = "# " + regexpStr;
+
+    regexpStr = '^' + regexpStr + '$';
 
     return { varNames, regexp: new RegExp(regexpStr, 'i') };
 }
@@ -185,7 +189,7 @@ Bot.prototype.buildRegexp = function (ruleLine) {
 Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
     let last = -1;
-    let { varNames, regexp } = this.buildRegexp(ruleLine);
+    let { varNames, regexp } = this.buildRegexp(ruleLine, true);
 
     for (let i = 0; i < bot.db.length; i++) {
 
@@ -200,7 +204,7 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
             for (let v = 0; v < varNames.length; v++) {
                 this.state.variables[varNames[v]] = captures[v + 1];
-                this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1]});
+                this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
             }
             last = i;
         }
@@ -226,14 +230,14 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
 
 
-Bot.prototype.dataize = function(ruleLine) {
+Bot.prototype.dataize = function (ruleLine) {
 
     let strLine = this.outputify(ruleLine);
     let parsed = ruleParser.parse(strLine + '\n');
 
     if (!parsed || parsed[0].operator === "none")
         strLine = "# " + strLine;
-    
+
     return strLine;
 }
 
@@ -271,7 +275,7 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
     if (captures)
         for (let v = 0; v < varNames.length; v++) {
             this.state.variables[varNames[v]] = captures[v + 1];
-            this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1]});
+            this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
         }
     else
         this.state.inhibited = true;
@@ -302,7 +306,7 @@ Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
                 this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
                 bot.input(msg);
             }, timeout * 1000);
-    
+
         } else {
 
             this.state.selfputCandidates.push(this.outputify(ruleLine));
