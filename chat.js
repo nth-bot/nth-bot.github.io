@@ -116,17 +116,18 @@ window.onload = function() {
 
 
 
-    ui.b("Disc", function() {
+    ui.b("Log", function() {
 
-        window.open("https://github.com/nth-bot/nth-bot.github.io/discussions", "_blank");
-    }, "Opens the NthBOT discussion page on Github");
+        $("#side-log").toggleClass("fullscreen");
+
+    }, "Show introspection log panel");
 
 
 
     ui.b("Doc", function() {
 
-        window.open("https://github.com/nth-bot/nth-bot.github.io/wiki", "_blank");
-    }, "Opens the NthBOT documentation page on Github");
+        window.open("https://github.com/nth-bot/nth-bot.github.io", "_blank");
+    }, "Opens the NthBOT page on Github");
    
 
     ui.e(bot.db.join(''));
@@ -186,15 +187,15 @@ let bot = new Bot({
         //let time = $("#time").text();
         let html = '';
         //html += `<span class="log-event">[${time}] ${data.event.toUpperCase()}: </span> `;
-        html += `<span class="log-event">[${tr(data.event)}] </span> `;
+        html += `<span class="log-event">${tr(data.event)} → </span> `;
         html += `<span class="log-content">${data.content}</span> `;
         html += "<br>";
         let sl = $("#side-log");
         sl[0].innerHTML += html;
         setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);
     },
-    selfputTimeout: 100,
-    interval: 20
+    selfputTimeout: 250,
+    interval: 50
 });
 
 bot.load(source);
