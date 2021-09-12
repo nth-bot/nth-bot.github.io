@@ -351,9 +351,9 @@ Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
         this.log({ event: "add to db", content: '<br>' + data });
 
         this.state.addToDb.unshift(data);
-    }
 
-    displayNeedRefresh();
+        displayNeedRefresh();
+    }
 }
 
 
@@ -362,10 +362,11 @@ Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["remove"] = function (input, ruleLine) {
 
-    if (!this.state.inhibited)
+    if (!this.state.inhibited) {
+        
         this.iterateDb(ruleLine, true, "remove");
-
-    displayNeedRefresh();
+        displayNeedRefresh();
+    }
 }
 
 
