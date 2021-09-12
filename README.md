@@ -31,7 +31,7 @@ Download and use locally, or try it online:
     - Save, saves the current script to the browser's Localstorage and in the cloud
     - Dump, replaces the current script by the content of the bot's database
     - Load, replaces the bot's database by the current script
-    - Disc, opens the NthBOT discussion page on Github
+    - Log, shows the introspection log panel
     - Doc, opens the NthBOT documentation page on Github
         
 ## Documentation
