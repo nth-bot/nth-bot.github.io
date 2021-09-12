@@ -181,12 +181,10 @@ window.tr = function(txt) { return navigator.languages.includes("fr") ? translat
 let bot = new Bot({
     output: (txt) => {
         ui.t(txt.trim());
-        bot.log({ event: "output", content: '<br>' + txt.trim() });
+        bot.log({ event: "output", content: '<br>' + txt.trim() + '<br>' });
     },
     log: (data) => {
-        //let time = $("#time").text();
         let html = '';
-        //html += `<span class="log-event">[${time}] ${data.event.toUpperCase()}: </span> `;
         html += `<span class="log-event">${tr(data.event)} → </span> `;
         html += `<span class="log-content">${data.content}</span> `;
         html += "<br>";
@@ -194,8 +192,8 @@ let bot = new Bot({
         sl[0].innerHTML += html;
         setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);
     },
-    selfputTimeout: 250,
-    interval: 50
+    selfputTimeout: 100,
+    interval: 20
 });
 
 bot.load(source);
