@@ -240,7 +240,8 @@ body * {
     width: 25vw;
     border-right: 6px solid black;
     box-sizing: border-box;
-    padding-top: var(--toolbar-height);
+    padding-top: 3em;
+    padding-bottom: 3em;
     padding-left: 5px;
     font-family: Monoid;
     font-size: 12px;
