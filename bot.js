@@ -28,7 +28,6 @@ function Bot(options) {
 Bot.prototype.load = function (source) {
 
     let stringParsed = stringParser.parse(source + '\n');
-
     this.db = this.db.concat(stringParsed);
 }
 
@@ -86,8 +85,10 @@ Bot.prototype.step = function () {
             this.db = this.state.dbAfterRemove;
             this.state.dbAfterRemove = [];
         }
-        this.load('\n' + this.state.addToDb.join('\n'));
-        this.state.addToDb = [];
+        if (this.state.addToDb.length) {
+            this.load('\n' + this.state.addToDb.join('\n'));
+            this.state.addToDb = [];
+        }
     }
 
     if (this.state.outputCandidates.length) {
