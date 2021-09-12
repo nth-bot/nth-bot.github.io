@@ -101,7 +101,9 @@ Bot.prototype.step = function () {
 
     if (this.state.selfputCandidates.length) {
 
-        let msg = this.state.selfputCandidates.slice(0);
+        let msg = [];
+        for (let item of this.state.selfputCandidates)
+            if (!msg.includes(item)) msg.push(item);
         this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
         setTimeout(() => { this.inputQueue = this.inputQueue.concat(msg); }, this.selfputTimeout);
 
