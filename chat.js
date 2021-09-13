@@ -185,6 +185,7 @@ let bot = new Bot({
     },
     log: (data) => {
         let html = '';
+        html += `<span class="log-command">${bot.currentCommand}</span><br>`;
         html += `<span class="log-event">${tr(data.event)} → </span> `;
         html += `<span class="log-content">${data.content}</span> `;
         html += "<br>";

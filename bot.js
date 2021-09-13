@@ -11,6 +11,7 @@ function Bot(options) {
 
     Object.assign(this, options);
 
+    this.currentCommand = '';
     this.inputQueue = [];
     this.state = {
         variables: {},
@@ -73,6 +74,8 @@ Bot.prototype.step = function () {
 
         for (let datum of this.db) {
 
+            this.currentCommand = datum.trim();
+
             let parsed;
             try { parsed = ruleParser.parse(datum.trim() + '\n'); }
             catch (e) { }
@@ -90,6 +93,8 @@ Bot.prototype.step = function () {
             this.state.addToDb = [];
         }
     }
+
+    this.currentCommand = '';
 
     if (this.state.outputCandidates.length) {
 

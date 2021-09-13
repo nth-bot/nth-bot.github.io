@@ -249,6 +249,11 @@ body * {
     scroll-behavior: smooth;
 }
 
+.log-command {
+    color: lightslategray;
+    text-decoration: underline;
+}
+
 .log-event {
     color: indianred;
 }
