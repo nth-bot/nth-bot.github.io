@@ -13,13 +13,6 @@ function Bot(options) {
 
     this.currentCommand = '';
     this.inputQueue = [];
-    this.state = {
-        variables: {},
-        addToDb: [],
-        dbAfterRemove: [],
-        outputCandidates: [],
-        selfputCandidates: []
-    };
 }
 
 
@@ -66,54 +59,105 @@ Bot.prototype.input = function (i) {
 
 
 
+Bot.prototype.executeLine = function(input, datum) {
+
+    this.currentCommand = datum.trim();
+
+    let parsed;
+    try { parsed = ruleParser.parse(datum.trim() + '\n'); }
+    catch (e) { }
+
+    if (parsed)
+        for (let rule of parsed)
+            this.applyOperator[rule.operator].call(this, input, rule.line, rule.timeout);
+}
+
+
+
+
+
+Bot.prototype.dbRemove = function () {
+
+    if (this.tmp.dbAfterRemove.length)
+        this.db = this.tmp.dbAfterRemove;
+}
+
+
+
+
+
+Bot.prototype.dbAdd = function () {
+
+    if (this.tmp.addToDb.length)
+        this.load('\n' + this.tmp.addToDb.join('\n'));
+}
+
+
+
+
+
+Bot.prototype.consumeOutputCandidates = function () {
+
+    if (this.tmp.outputCandidates.length) {
+
+        let chosen = Math.floor(Math.random() * this.tmp.outputCandidates.length);
+        this.output(this.tmp.outputCandidates[chosen]);
+    }
+}
+
+
+
+
+
+Bot.prototype.consumeSelfputCandidates = function () {
+    
+    if (this.tmp.selfputCandidates.length) {
+
+        let msg = [];
+
+        for (let item of this.tmp.selfputCandidates)
+            if (!msg.includes(item)) msg.push(item);
+
+        this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
+        
+        setTimeout(() => {
+
+            this.inputQueue = this.inputQueue.concat(msg);
+
+        }, this.selfputTimeout);
+    }
+}
+
+
+
+
+        
 Bot.prototype.step = function () {
 
+    this.tmp = {
+        inhibited: false,
+        variables: {},
+        addToDb: [],
+        dbAfterRemove: [],
+        outputCandidates: [],
+        selfputCandidates: []
+    };
+                
     while (this.inputQueue.length > 0) {
 
         let input = this.inputQueue.shift();
 
-        for (let datum of this.db) {
+        for (let datum of this.db) this.executeLine(input, datum);
 
-            this.currentCommand = datum.trim();
-
-            let parsed;
-            try { parsed = ruleParser.parse(datum.trim() + '\n'); }
-            catch (e) { }
-
-            if (parsed)
-                for (let rule of parsed)
-                    this.applyOperator[rule.operator].call(this, input, rule.line, rule.timeout);
-        }
-        if (this.state.dbAfterRemove.length) {
-            this.db = this.state.dbAfterRemove;
-            this.state.dbAfterRemove = [];
-        }
-        if (this.state.addToDb.length) {
-            this.load('\n' + this.state.addToDb.join('\n'));
-            this.state.addToDb = [];
-        }
+        this.dbRemove();
+        this.dbAdd();
     }
 
     this.currentCommand = '';
 
-    if (this.state.outputCandidates.length) {
+    this.consumeOutputCandidates();
 
-        let chosen = Math.floor(Math.random() * this.state.outputCandidates.length);
-        this.output(this.state.outputCandidates[chosen]);
-
-        this.state.outputCandidates = [];
-    }
-
-    if (this.state.selfputCandidates.length) {
-
-        let msg = [];
-        for (let item of this.state.selfputCandidates)
-            if (!msg.includes(item)) msg.push(item);
-        this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
-        setTimeout(() => { this.inputQueue = this.inputQueue.concat(msg); }, this.selfputTimeout);
-
-        this.state.selfputCandidates = [];
-    }
+    this.consumeSelfputCandidates();
 
     if (this.running)
         setTimeout(() => { this.step(); }, this.interval);
@@ -133,7 +177,7 @@ Bot.prototype.outputify = function (content, showCurlies) {
             result += item.content;
 
         if (item.type === "insertion")
-            result += this.state.variables[this.outputify(item.content)] || '';
+            result += this.tmp.variables[this.outputify(item.content)] || '';
 
         if (item.type === "capture")
             result += showCurlies ?
@@ -161,7 +205,7 @@ Bot.prototype.escapeRegexp = function (str) {
 
 
 
-Bot.prototype.buildRegexp = function (ruleLine, appendSharp) {
+Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
 
     let regexpStr = '';
     let varNames = [];
@@ -173,7 +217,7 @@ Bot.prototype.buildRegexp = function (ruleLine, appendSharp) {
 
         else if (item.type === "insertion") {
 
-            regexpStr += this.state.variables[this.outputify(item.content)] || '';
+            regexpStr += this.tmp.variables[this.outputify(item.content)] || '';
 
         } else { // capture
 
@@ -181,7 +225,7 @@ Bot.prototype.buildRegexp = function (ruleLine, appendSharp) {
             varNames.push(this.outputify(item.content));
         }
 
-    if (appendSharp)
+    if (prependSharp)
         if (!['#', '<', '>', '@', '*', '/', '+', '-'].includes(regexpStr[0]))
             regexpStr = "# " + regexpStr;
 
@@ -211,26 +255,32 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
             this.log({ event: "match", content: item });
 
             for (let v = 0; v < varNames.length; v++) {
-                this.state.variables[varNames[v]] = captures[v + 1];
+                this.tmp.variables[varNames[v]] = captures[v + 1];
                 this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
             }
             last = i;
         }
     }
 
-    if (removeLast && last >= 0) {
+    if (removeLast) {
+        
+        if (last >= 0) {
 
-        let keep = true;
+            let keep = true;
 
-        for (let i = 0; i < bot.db.length; i++) {
+            for (let i = 0; i < bot.db.length; i++) {
 
-            if (ruleParser.parse(bot.db[i])[0].operator === "delimiter") keep = true;
-            if (i === last) keep = false;
+                if (ruleParser.parse(bot.db[i])[0].operator === "delimiter") keep = true;
+                if (i === last) keep = false;
 
-            if (keep) bot.state.dbAfterRemove.push(bot.db[i]);
+                if (keep) bot.tmp.dbAfterRemove.push(bot.db[i]);
+            }
+
+        } else {
+
+            this.tmp.inhibited = true;
         }
     }
-
     return last >= 0;
 }
 
@@ -267,7 +317,7 @@ Bot.prototype.applyOperator["none"] = function (input, ruleLine) { }
 
 Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine) {
 
-    this.state.inhibited = false;
+    this.tmp.inhibited = false;
 }
 
 
@@ -282,11 +332,11 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
 
     if (captures)
         for (let v = 0; v < varNames.length; v++) {
-            this.state.variables[varNames[v]] = captures[v + 1];
+            this.tmp.variables[varNames[v]] = captures[v + 1];
             this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
         }
     else
-        this.state.inhibited = true;
+        this.tmp.inhibited = true;
 }
 
 
@@ -295,8 +345,8 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["output"] = function (input, ruleLine) {
 
-    if (!this.state.inhibited)
-        this.state.outputCandidates.push(this.outputify(ruleLine));
+    if (!this.tmp.inhibited)
+        this.tmp.outputCandidates.push(this.outputify(ruleLine));
 }
 
 
@@ -305,19 +355,19 @@ Bot.prototype.applyOperator["output"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
 
-    if (!this.state.inhibited) {
+    if (!this.tmp.inhibited) {
 
         if (timeout) {
 
             setTimeout(() => {
                 let msg = bot.outputify(ruleLine);
-                this.log({ event: "selfput", content: '<br>' + msg.join('<br>') });
+                this.log({ event: "selfput", content: '<br>' + msg });
                 bot.input(msg);
             }, timeout * 1000);
 
         } else {
 
-            this.state.selfputCandidates.push(this.outputify(ruleLine));
+            this.tmp.selfputCandidates.push(this.outputify(ruleLine));
         }
     }
 }
@@ -328,11 +378,11 @@ Bot.prototype.applyOperator["selfput"] = function (input, ruleLine, timeout) {
 
 Bot.prototype.applyOperator["if"] = function (input, ruleLine, eventName) {
 
-    if (this.state.inhibited) return;
+    if (this.tmp.inhibited) return;
 
     let found = this.iterateDb(ruleLine, false, eventName || "if");
 
-    if (!found) this.state.inhibited = true;
+    if (!found) this.tmp.inhibited = true;
 }
 
 
@@ -341,10 +391,10 @@ Bot.prototype.applyOperator["if"] = function (input, ruleLine, eventName) {
 
 Bot.prototype.applyOperator["not"] = function (input, ruleLine) {
 
-    if (this.state.inhibited) return;
+    if (this.tmp.inhibited) return;
 
     this.applyOperator["if"].call(this, input, ruleLine, "not");
-    this.state.inhibited = !this.state.inhibited;
+    this.tmp.inhibited = !this.tmp.inhibited;
 }
 
 
@@ -353,12 +403,12 @@ Bot.prototype.applyOperator["not"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 
-    if (!this.state.inhibited) {
+    if (!this.tmp.inhibited) {
 
         let data = this.dataize(ruleLine);
         this.log({ event: "add to db", content: '<br>' + data });
 
-        this.state.addToDb.unshift(data);
+        this.tmp.addToDb.unshift(data);
 
         displayNeedRefresh();
     }
@@ -370,7 +420,7 @@ Bot.prototype.applyOperator["add"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["remove"] = function (input, ruleLine) {
 
-    if (!this.state.inhibited) {
+    if (!this.tmp.inhibited) {
         
         this.iterateDb(ruleLine, true, "remove");
         displayNeedRefresh();
