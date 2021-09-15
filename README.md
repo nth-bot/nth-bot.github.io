@@ -13,6 +13,7 @@ Download and use locally, or try it online:
         op    type         description
         --    ----         -----------
         
+        =     meta         import
         #     delimiter    rule
         <     condition    input
         >     action       output
