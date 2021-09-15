@@ -86,7 +86,7 @@ codeMirror.on("change", displayNeedRefresh);
 
 
 Split([".CodeMirror", "#terminal"], {
-    sizes: [75, 25],
+    sizes: [65, 35],
     gutterSize: 6,
     direction: "vertical",
     elementStyle: function (dimension, size, gutterSize) {
