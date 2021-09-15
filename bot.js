@@ -44,7 +44,6 @@ Bot.prototype.loadStrings = function (stringList) {
             result.push(item);
         }
     }
-    console.log(result)
 
     return result;
 }
