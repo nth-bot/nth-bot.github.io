@@ -25,7 +25,7 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
 CodeMirror.defineSimpleMode("mymode", {
     
     start: [
-        { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
+        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
 
         { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
@@ -35,6 +35,7 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /[-+\/\*@<>][ \t\r\n]/, token: "operator" },
 
         { regex: /#/, token: "operator", next: "delimiter" },
+        { regex: /=/, token: "operator", next: "import" },
 
         { regex: /./, token: "normal" }
     ],
@@ -51,10 +52,16 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /./, token: "capture" }
     ],
     delimiter: [
-        { regex: /(\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
+        { regex: /[\=\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
         { regex: /#/, token: "operator" },
         { regex: /./, token: "delimiter" }
+    ],
+    import: [
+        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
+        { regex: /[#-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /=/, token: "operator" },
+        { regex: /./, token: "import" }
     ],
     math: [
         { regex: /\[/, token: "insert", push: "insert" },

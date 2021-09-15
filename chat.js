@@ -45,6 +45,9 @@ window.onload = function() {
 
         if (!name) return;
 
+        ui.e(ui.e() + '\n' + bot.import(name));
+
+/*
         let open = function(name) {
             if (ui.s().includes(name)) {
             
@@ -73,7 +76,7 @@ window.onload = function() {
         } else {
             open(name);
         }
-
+*/
     }, "Appends a script to the editor");
 
 
@@ -101,7 +104,7 @@ window.onload = function() {
 
     ui.b("Dump", function() {
 
-        ui.e(bot.db.join(''));
+        ui.e(bot.db.map(line => line.string).join(''));
         displayDoneRefresh();
     }, "Shows the bot's database");
 
@@ -196,10 +199,37 @@ let bot = new Bot({
 
         logTimeout = setTimeout(() => {
             let sl = $("#side-log");
-            sl[0].innerHTML += logTodo;
+            sl[0].innerHTML = (sl[0].innerHTML + logTodo).slice(-100000);
             logTimeout = false;
             setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);    
         }, 250);
+    },
+    import: function(name) {
+
+        if (ui.s().includes(name)) {
+
+            return ui.s(name);
+
+        } else {
+
+            if (navigator.onLine) {
+                try {
+                    portal.from("scripts").select().eq("title", name).then(function(data) {
+                        if (data.body[0]) {
+                            displayNeedRefresh();
+                            console.log("[downloaded]", data);
+                            return data.body[0].script;
+                        } else {
+                            return '';
+                        }
+                    });
+                } catch(e) {
+                    return '';
+                }
+            } else {
+                return '';
+            }
+        }
     },
     selfputTimeout: 100,
     interval: 5,

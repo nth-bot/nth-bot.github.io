@@ -19,10 +19,44 @@ function Bot(options) {
 
 
 
+Bot.prototype.loadStrings = function (stringList) {
+
+    let beforeImport = stringList.map(string => {
+        let parsed = null;
+        try {
+            parsed = ruleParser.parse(string);
+        } catch(e) {}
+        return { string, parsed };
+    });
+
+    let result = [];
+    for (let item of beforeImport) {
+        
+        if (item.parsed[0].operator === "import") {
+            result = result.concat(
+                this.loadStrings(
+                    stringParser.parse(
+                        this.import(this.outputify(item.parsed[0].line)) + '\n'
+                    )
+                )
+            );
+        } else {
+            result.push(item);
+        }
+    }
+    console.log(result)
+
+    return result;
+}
+
+
+
+
+
 Bot.prototype.load = function (source) {
 
     let stringParsed = stringParser.parse(source + '\n');
-    this.db = this.db.concat(stringParsed);
+    this.db = this.db.concat(this.loadStrings(stringParsed));
 }
 
 
@@ -61,14 +95,10 @@ Bot.prototype.input = function (i) {
 
 Bot.prototype.executeLine = function(input, datum) {
 
-    this.currentCommand = datum.trim();
+    this.currentCommand = datum.string.trim();
 
-    let parsed;
-    try { parsed = ruleParser.parse(datum.trim() + '\n'); }
-    catch (e) { }
-
-    if (parsed)
-        for (let rule of parsed)
+    if (datum.parsed)
+        for (let rule of datum.parsed)
             this.applyOperator[rule.operator].call(this, input, rule.line, rule.timeout);
 }
 
@@ -170,7 +200,7 @@ Bot.prototype.step = function () {
 Bot.prototype.outputify = function (content, showCurlies) {
 
     let result = '';
-
+    
     for (let item of content) {
 
         if (item.type === "text")
@@ -229,7 +259,7 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
         if (!['#', '<', '>', '@', '*', '/', '+', '-'].includes(regexpStr[0]))
             regexpStr = "# " + regexpStr;
 
-    regexpStr = '^' + regexpStr + '$';
+    regexpStr = '^\s*' + regexpStr.trim() + '\s*$';
 
     return { varNames, regexp: new RegExp(regexpStr, 'i') };
 }
@@ -245,9 +275,9 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
     for (let i = 0; i < bot.db.length; i++) {
 
-        let item = bot.db[i];
+        let item = bot.db[i].string.trim();
 
-        let captures = item.trim().match(regexp);
+        let captures = item.match(regexp);
 
         if (captures) {
 
@@ -270,7 +300,7 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
             for (let i = 0; i < bot.db.length; i++) {
 
-                if (ruleParser.parse(bot.db[i])[0].operator === "delimiter") keep = true;
+                if (bot.db[i].parsed[0].operator === "delimiter") keep = true;
                 if (i === last) keep = false;
 
                 if (keep) bot.tmp.dbAfterRemove.push(bot.db[i]);
@@ -310,6 +340,12 @@ Bot.prototype.applyOperator = {};
 
 
 Bot.prototype.applyOperator["none"] = function (input, ruleLine) { }
+
+
+
+
+
+Bot.prototype.applyOperator["import"] = function (input, ruleLine) { }
 
 
 

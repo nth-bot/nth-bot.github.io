@@ -189,6 +189,10 @@ body * {
     color: white;
 }
 
+.cm-import {
+    color: fuchsia;
+}
+
 .cm-math {
     color: #D0D0FF;
     background: rgba(88, 116, 155, 0.2);
