@@ -307,7 +307,7 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
 
         } else {
 
-            this.tmp.inhibited = true;
+            // this.tmp.inhibited = true; // this is shit
         }
     }
     return last >= 0;
