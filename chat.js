@@ -130,7 +130,7 @@ window.onload = function() {
     }, "Opens the NthBOT page on Github");
    
 
-    ui.e(bot.db.join(''));
+    ui.e(bot.db.map(line => line.string).join(''));
 
     displayDoneRefresh();
 }
@@ -177,6 +177,8 @@ window.translate = {
 
 window.tr = function(txt) { return navigator.languages.includes("fr") ? translate[txt].fr : txt };
 
+var logTimeout = false;
+var logTodo = '';
 
 let bot = new Bot({
     output: (txt) => {
@@ -184,17 +186,23 @@ let bot = new Bot({
         bot.log({ event: "output", content: '<br>' + txt.trim() + '<br>' });
     },
     log: (data) => {
-        let html = '';
-        html += `<span class="log-command">${bot.currentCommand}</span><br>`;
-        html += `<span class="log-event">${tr(data.event)} → </span> `;
-        html += `<span class="log-content">${data.content}</span> `;
-        html += "<br>";
-        let sl = $("#side-log");
-        sl[0].innerHTML += html;
-        setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);
+        
+        if (logTimeout) clearInterval(logTimeout);
+
+        logTodo += `<span class="log-command">${bot.currentCommand}</span><br>`;
+        logTodo += `<span class="log-event">${tr(data.event)} → </span> `;
+        logTodo += `<span class="log-content">${data.content}</span> `;
+        logTodo += "<br>";
+
+        logTimeout = setTimeout(() => {
+            let sl = $("#side-log");
+            sl[0].innerHTML += logTodo;
+            logTimeout = false;
+            setTimeout(() => { sl[0].scrollTop = sl[0].scrollHeight; }, 10);    
+        }, 250);
     },
     selfputTimeout: 100,
-    interval: 20
+    interval: 5,
 });
 
 bot.load(source);
