@@ -231,7 +231,7 @@ let bot = new Bot({
             }
         }
     },
-    selfputTimeout: 100,
+    selfputTimeout: 50,
     interval: 5,
 });
 

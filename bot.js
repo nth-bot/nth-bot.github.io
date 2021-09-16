@@ -11,8 +11,11 @@ function Bot(options) {
 
     Object.assign(this, options);
 
+    this.variables = {};
     this.currentCommand = '';
     this.inputQueue = [];
+
+    this.history = [];
 }
 
 
@@ -36,7 +39,7 @@ Bot.prototype.loadStrings = function (stringList) {
             result = result.concat(
                 this.loadStrings(
                     stringParser.parse(
-                        this.import(this.outputify(item.parsed[0].line)) + '\n'
+                        (this.import(this.outputify(item.parsed[0].line)) || '') + '\n'
                     )
                 )
             );
@@ -85,6 +88,7 @@ Bot.prototype.suspend = function () {
 
 Bot.prototype.input = function (i) {
 
+    this.history.push(i);
     this.inputQueue.push(i);
 }
 
@@ -130,6 +134,7 @@ Bot.prototype.consumeOutputCandidates = function () {
     if (this.tmp.outputCandidates.length) {
 
         let chosen = Math.floor(Math.random() * this.tmp.outputCandidates.length);
+        this.history.push(this.tmp.outputCandidates[chosen]);
         this.output(this.tmp.outputCandidates[chosen]);
     }
 }
@@ -152,6 +157,7 @@ Bot.prototype.consumeSelfputCandidates = function () {
         setTimeout(() => {
 
             this.inputQueue = this.inputQueue.concat(msg);
+            this.history = this.history.concat(msg);
 
         }, this.selfputTimeout);
     }
@@ -165,7 +171,6 @@ Bot.prototype.step = function () {
 
     this.tmp = {
         inhibited: false,
-        variables: {},
         addToDb: [],
         dbAfterRemove: [],
         outputCandidates: [],
@@ -206,7 +211,7 @@ Bot.prototype.outputify = function (content, showCurlies) {
             result += item.content;
 
         if (item.type === "insertion")
-            result += this.tmp.variables[this.outputify(item.content)] || '';
+            result += this.variables[this.outputify(item.content)] || '';
 
         if (item.type === "capture")
             result += showCurlies ?
@@ -246,7 +251,7 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
 
         else if (item.type === "insertion") {
 
-            regexpStr += this.tmp.variables[this.outputify(item.content)] || '';
+            regexpStr += this.variables[this.outputify(item.content)] || '';
 
         } else { // capture
 
@@ -284,7 +289,7 @@ Bot.prototype.iterateDb = function (ruleLine, removeLast, eventName) {
             this.log({ event: "match", content: item });
 
             for (let v = 0; v < varNames.length; v++) {
-                this.tmp.variables[varNames[v]] = captures[v + 1];
+                this.variables[varNames[v]] = captures[v + 1];
                 this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
             }
             last = i;
@@ -367,7 +372,7 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
 
     if (captures)
         for (let v = 0; v < varNames.length; v++) {
-            this.tmp.variables[varNames[v]] = captures[v + 1];
+            this.variables[varNames[v]] = captures[v + 1];
             this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
         }
     else
