@@ -389,6 +389,7 @@ Bot.prototype.applyOperator["import"] = function (input, ruleLine) { }
 Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine) {
 
     this.tmp.inhibited = false;
+    this.tmp.storyIterator = 0;
 }
 
 
