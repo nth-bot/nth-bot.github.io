@@ -175,10 +175,13 @@ window.translate = {
     "match": { fr: "correspondance" },
     "not pattern": { fr: "pattern non" },
     "remove pattern": { fr: "pattern oubli" },
+    "story pattern": { fr: "pattern historique" }
 };
 
 
-window.tr = function(txt) { return navigator.languages.includes("fr") ? translate[txt].fr : txt };
+window.tr = function(txt) {
+    return navigator.languages.includes("fr") ? translate[txt].fr : txt
+};
 
 var logTimeout = false;
 var logTodo = '';

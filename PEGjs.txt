@@ -1,4 +1,4 @@
-
+5630911848644608-proj
 
 =================================================== ruleParser
 
@@ -34,6 +34,7 @@ Rule
     return {
         line: l,
         operator: {
+        	'=': "import",
             '#': "delimiter",
             '<': "input",
             '>': "output",
@@ -41,14 +42,15 @@ Rule
             '*': "if",
             '/': "not",
             '+': "add",
-            '-': "remove"
+            '-': "remove",
+            '|': "story"
         }[op]
     };
 }
 
 
 Operator
-= '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-'
+= '=' / '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-' / '|'
 
 
 Line
@@ -75,8 +77,9 @@ Insertion
 
 Char
 = '(+' / '(-' / '(*' / '(/'
-/ [^\#\<\>\@\*\/\+\-\{\}\[\]]
+/ [^\=\#\<\>\@\*\/\+\-\|\{\}\[\]]
 / '#' c:'#'+ { return c.join(''); }
+/ '=' c:'='+ { return c.join(''); }
 / '<' c:'<'+ { return c.join(''); }
 / '>' c:'>'+ { return c.join(''); }
 / '@' c:'@'+ { return c.join(''); }
@@ -84,11 +87,12 @@ Char
 / '/' c:'/'+ { return c.join(''); }
 / '+' c:'+'+ { return c.join(''); }
 / '-' c:'-'+ { return c.join(''); }
+/ '|' c:'|'+ { return c.join(''); }
 / '[' c:'['+ { return c.join(''); }
 / ']' c:']'+ { return c.join(''); }
 / '{' c:'{'+ { return c.join(''); }
 / '}' c:'}'+ { return c.join(''); }
-/ c1:[\#\<\>\@\*\/\+\-] c2:[^ \t\r\n] { return c1 + c2; }
+/ c1:[\=\#\<\>\@\*\/\+\-\|] c2:[^ \t\r\n] { return c1 + c2; }
 
 
 
@@ -134,6 +138,7 @@ Rule
     return {
         line: l,
         operator: {
+        	'=': "import",
             '#': "delimiter",
             '<': "input",
             '>': "output",
@@ -141,14 +146,15 @@ Rule
             '*': "if",
             '/': "not",
             '+': "add",
-            '-': "remove"
+            '-': "remove",
+            '|': "story"
         }[op]
     };
 }
 
 
 Operator
-= '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-'
+= '=' / '#' / '<' / '>' / '@' / '*' / '/' / '+' / '-' / '|'
 
 
 Line
@@ -175,7 +181,8 @@ Insertion
 
 Char
 = '(+' / '(-' / '(*' / '(/'
-/ [^\#\<\>\@\*\/\+\-\{\}\[\]]
+/ [^\=\#\<\>\@\*\/\+\-\|\{\}\[\]]
+/ '=' c:'='+ { return c.join(''); }
 / '#' c:'#'+ { return c.join(''); }
 / '<' c:'<'+ { return c.join(''); }
 / '>' c:'>'+ { return c.join(''); }
@@ -184,11 +191,12 @@ Char
 / '/' c:'/'+ { return c.join(''); }
 / '+' c:'+'+ { return c.join(''); }
 / '-' c:'-'+ { return c.join(''); }
+/ '|' c:'|'+ { return c.join(''); }
 / '[' c:'['+ { return c.join(''); }
 / ']' c:']'+ { return c.join(''); }
 / '{' c:'{'+ { return c.join(''); }
 / '}' c:'}'+ { return c.join(''); }
-/ c1:[\#\<\>\@\*\/\+\-] c2:[^ \t\r\n] { return c1 + c2; }
+/ c1:[\=\#\<\>\@\*\/\+\-] c2:[^ \t\r\n] { return c1 + c2; }
 
 
 
@@ -254,3 +262,118 @@ Number
 
 _
 = [ \t\r\n]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=================================================== delimiterParser
+
+
+Source
+= t:$Text? b:Block* {
+	return !t ? b : [t].concat(b);
+}
+
+
+_
+= [ \t\r\n]
+
+
+Block
+= dr:$DelimiterRule gr:$GeneralRule* {
+	return dr + gr;
+}
+
+
+DelimiterRule
+= op:'#' _ l:Line _* {
+	return {
+    	line: l,
+        operator: "delimiter"
+    };
+}
+
+
+GeneralRule
+= op:Operator _ l:Line _* {
+
+    return {
+        line: l,
+        operator: {
+            '<': "input",
+            '>': "output",
+            '@': "selfput",
+            '*': "if",
+            '/': "not",
+            '+': "add",
+            '-': "remove"
+        }[op]
+    };
+}
+
+
+Operator
+= '<' / '>' / '@' / '*' / '/' / '+' / '-'
+
+
+Line
+= lc:LineContent+
+
+
+LineContent
+= Text
+/ Capture
+/ Insertion
+
+
+Text
+= c:Char+ { return { type: "text", content: c.join('') }; }
+
+
+Capture
+= '{' l:Line '}' { return { type: "capture", content: l }; }
+
+
+Insertion
+= '[' l:Line ']' { return { type: "insertion", content: l }; }
+
+
+Char
+= '(+' / '(-' / '(*' / '(/'
+/ [^\#\<\>\@\*\/\+\-\{\}\[\]]
+/ '#' c:'#'+ { return c.join(''); }
+/ '<' c:'<'+ { return c.join(''); }
+/ '>' c:'>'+ { return c.join(''); }
+/ '@' c:'@'+ { return c.join(''); }
+/ '*' c:'*'+ { return c.join(''); }
+/ '/' c:'/'+ { return c.join(''); }
+/ '+' c:'+'+ { return c.join(''); }
+/ '-' c:'-'+ { return c.join(''); }
+/ '[' c:'['+ { return c.join(''); }
+/ ']' c:']'+ { return c.join(''); }
+/ '{' c:'{'+ { return c.join(''); }
+/ '}' c:'}'+ { return c.join(''); }
+/ c1:[\#\<\>\@\*\/\+\-] c2:[^ \t\r\n] { return c1 + c2; }
+
+

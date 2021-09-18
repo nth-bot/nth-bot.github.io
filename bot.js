@@ -174,7 +174,8 @@ Bot.prototype.step = function () {
         addToDb: [],
         dbAfterRemove: [],
         outputCandidates: [],
-        selfputCandidates: []
+        selfputCandidates: [],
+        storyIterator: 0
     };
                 
     while (this.inputQueue.length > 0) {
@@ -210,10 +211,10 @@ Bot.prototype.outputify = function (content, showCurlies) {
         if (item.type === "text")
             result += item.content;
 
-        if (item.type === "insertion")
+        else if (item.type === "insertion")
             result += this.variables[this.outputify(item.content)] || '';
 
-        if (item.type === "capture")
+        else if (item.type === "capture")
             result += showCurlies ?
                 '{' + (this.outputify(item.content) || '') + '}' :
                 this.outputify(item.content) || '';
@@ -266,6 +267,36 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
     regexpStr = '^\s*' + regexpStr.trim() + '\s*$';
 
     return { varNames, regexp: new RegExp(regexpStr, 'i') };
+}
+
+
+
+
+
+Bot.prototype.iterateStory = function (ruleLine) {
+
+    let { varNames, regexp } = this.buildRegexp(ruleLine);
+
+    while (this.tmp.storyIterator < bot.history.length) {
+
+        let item = bot.history[this.tmp.storyIterator].trim();
+
+        let captures = item.match(regexp);
+
+        if (captures) {
+
+            this.log({ event: "story pattern", content: this.outputify(ruleLine, true) });
+            this.log({ event: "match", content: item });
+
+            for (let v = 0; v < varNames.length; v++) {
+                this.variables[varNames[v]] = captures[v + 1];
+                this.log({ event: "variable", content: varNames[v] + " = " + captures[v + 1] });
+            }
+            return true;
+        }
+        ++this.tmp.storyIterator;
+    }
+    return false;
 }
 
 
@@ -465,6 +496,19 @@ Bot.prototype.applyOperator["remove"] = function (input, ruleLine) {
         this.iterateDb(ruleLine, true, "remove");
         displayNeedRefresh();
     }
+}
+
+
+
+
+
+Bot.prototype.applyOperator["story"] = function (input, ruleLine) {
+
+    if (this.tmp.inhibited) return;
+
+    let found = this.iterateStory(ruleLine);
+
+    if (!found) this.tmp.inhibited = true;
 }
 
 

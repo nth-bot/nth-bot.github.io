@@ -25,14 +25,14 @@ var jQueryTerminal = $('#terminal').terminal(function (command) {
 CodeMirror.defineSimpleMode("mymode", {
     
     start: [
-        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
+        { regex: /(\|\|+|\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "normal" },
 
         { regex: /\[/, token: "insert", push: "insert" },
         { regex: /\{/, token: "capture", push: "capture" },
 
         { regex: /\([\+\-\*\/]/, token: "math", push: "math" },
 
-        { regex: /[-+\/\*@<>][ \t\r\n]/, token: "operator" },
+        { regex: /[-+\/\*@<>|][ \t\r\n]/, token: "operator" },
 
         { regex: /#/, token: "operator", next: "delimiter" },
         { regex: /=/, token: "operator", next: "import" },
@@ -52,15 +52,15 @@ CodeMirror.defineSimpleMode("mymode", {
         { regex: /./, token: "capture" }
     ],
     delimiter: [
-        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /(\|\|+|\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
+        { regex: /[\-+\/\*@<>|][ \t\r\n]/, token: "operator", next: "start" },
         { regex: /#/, token: "operator" },
         { regex: /=/, token: "operator", next: "import" },
         { regex: /./, token: "delimiter" }
     ],
     import: [
-        { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /(\|\|+|\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
+        { regex: /[\-+\/\*@<>|][ \t\r\n]/, token: "operator", next: "start" },
         { regex: /#/, token: "operator", next: "delimiter" },
         { regex: /=/, token: "operator" },
         { regex: /./, token: "import" }
@@ -168,7 +168,6 @@ setInterval(function () {
     var time = new Date();
     document.getElementById("time").innerHTML = time.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + ':' + time.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + time.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 });
 }, 1000);
-
 
 
 
