@@ -53,13 +53,15 @@ CodeMirror.defineSimpleMode("mymode", {
     ],
     delimiter: [
         { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[\=\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /[\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
         { regex: /#/, token: "operator" },
+        { regex: /=/, token: "operator", next: "import" },
         { regex: /./, token: "delimiter" }
     ],
     import: [
         { regex: /(\=\=+|\#\#+|\[\[+|\]\]+|\{\{+|\}\}+|\-\-+|\+\++|\/\/+|\*\*+|\@\@+|\<\<+|\>\>+)/, token: "delimiter" },
-        { regex: /[#-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /[\-+\/\*@<>][ \t\r\n]/, token: "operator", next: "start" },
+        { regex: /#/, token: "operator", next: "delimiter" },
         { regex: /=/, token: "operator" },
         { regex: /./, token: "import" }
     ],
@@ -166,4 +168,7 @@ setInterval(function () {
     var time = new Date();
     document.getElementById("time").innerHTML = time.getHours().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + ':' + time.getMinutes().toLocaleString(undefined, { minimumIntegerDigits: 2 }) + '.' + time.getSeconds().toLocaleString(undefined, { minimumIntegerDigits: 2 });
 }, 1000);
+
+
+
 
