@@ -268,10 +268,12 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
         }
 
     if (prependSharp)
-        if (!['#', '<', '>', '@', '*', '/', '+', '-', '|'].includes(regexpStr[0]))
+        if (!['#', '<', '~', '>', '@', '*', '/', '+', '-', '|'].includes(regexpStr[0]))
             regexpStr = "# " + regexpStr;
 
-    regexpStr = '^\s*' + regexpStr.trim() + '\s*$';
+    regexpStr = '^\\s*' + regexpStr.trim() + '\\s*$';
+
+    console.log(regexpStr);
 
     return { varNames, regexp: new RegExp(regexpStr, 'i') };
 }
@@ -405,6 +407,8 @@ Bot.prototype.applyOperator["delimiter"] = function (input, ruleLine) {
 
 Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
 
+    if (this.tmp.inhibited) return;
+
     let { varNames, regexp } = this.buildRegexp(ruleLine);
 
     let captures = input.trim().match(regexp);
@@ -416,6 +420,18 @@ Bot.prototype.applyOperator["input"] = function (input, ruleLine) {
         }
     else
         this.tmp.inhibited = true;
+}
+
+
+
+
+
+Bot.prototype.applyOperator["ninput"] = function (input, ruleLine) {
+
+    if (this.tmp.inhibited) return;
+
+    this.applyOperator["input"].call(this, input, ruleLine);
+    this.tmp.inhibited = !this.tmp.inhibited;
 }
 
 

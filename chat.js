@@ -47,36 +47,6 @@ window.onload = function() {
 
         ui.e(ui.e() + '\n' + bot.import(name));
 
-/*
-        let open = function(name) {
-            if (ui.s().includes(name)) {
-            
-                ui.e(ui.e() + '\n' + ui.s(name));
-                displayNeedRefresh();
-    
-            } else {
-                alert('OPEN\nUnknown path "' + name + '"');    
-            }
-        }
-
-        if (navigator.onLine) {
-            try {
-                portal.from("scripts").select().eq("title", name).then(function(data) {
-                    if (data.body[0]) {
-                        ui.e(ui.e() + '\n' + data.body[0].script);
-                        displayNeedRefresh();
-                        console.log("[downloaded]", data);
-                    } else {
-                        open(name);
-                    }
-                });
-            } catch(e) {
-                open(name);
-            }
-        } else {
-            open(name);
-        }
-*/
     }, "Appends a script to the editor");
 
 
