@@ -16,6 +16,7 @@ Download and use locally, or try it online:
         =     meta         import
         #     delimiter    rule
         <     condition    input
+        ~     condition    not input
         >     action       output
         @     action       selfput
         |     condition    is in history
