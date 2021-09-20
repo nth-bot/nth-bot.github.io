@@ -5,9 +5,10 @@ function Bot(options) {
 
     this.db = [];
     this.interval = 100;
-    this.output = (txt) => { document.body.innerHTML += txt + "<br>"; };
-    this.log = (data) => { console.log(data); };
+    this.output = () => {};
+    this.log = () => {};
     this.selfputTimeout = 1000;
+    this.import = () => {};
 
     Object.assign(this, options);
 
@@ -77,6 +78,12 @@ Bot.prototype.run = function (interval) {
 
 
 
+Bot.prototype.resume = Bot.prototype.run;
+
+
+
+
+
 Bot.prototype.suspend = function () {
 
     this.running = false;
@@ -88,7 +95,7 @@ Bot.prototype.suspend = function () {
 
 Bot.prototype.input = function (i) {
 
-    this.history.push(i);
+    this.history.push('< '+i);
     this.inputQueue.push(i);
 }
 
@@ -134,7 +141,7 @@ Bot.prototype.consumeOutputCandidates = function () {
     if (this.tmp.outputCandidates.length) {
 
         let chosen = Math.floor(Math.random() * this.tmp.outputCandidates.length);
-        this.history.push(this.tmp.outputCandidates[chosen]);
+        this.history.push('> ' + this.tmp.outputCandidates[chosen]);
         this.output(this.tmp.outputCandidates[chosen]);
     }
 }
@@ -157,7 +164,7 @@ Bot.prototype.consumeSelfputCandidates = function () {
         setTimeout(() => {
 
             this.inputQueue = this.inputQueue.concat(msg);
-            this.history = this.history.concat(msg);
+            this.history = this.history.concat(msg.map(m => '@ '+m));
 
         }, this.selfputTimeout);
     }
@@ -261,7 +268,7 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
         }
 
     if (prependSharp)
-        if (!['#', '<', '>', '@', '*', '/', '+', '-'].includes(regexpStr[0]))
+        if (!['#', '<', '>', '@', '*', '/', '+', '-', '|'].includes(regexpStr[0]))
             regexpStr = "# " + regexpStr;
 
     regexpStr = '^\s*' + regexpStr.trim() + '\s*$';
