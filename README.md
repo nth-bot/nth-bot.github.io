@@ -19,7 +19,7 @@ Download and use locally, or try it online:
         ~     condition    not input
         >     action       output
         @     action       selfput
-        |     condition    is in history
+        |     condition    trace history
         *     condition    is in db
         /     condition    is not in db
         +     action       add to db
