@@ -273,8 +273,6 @@ Bot.prototype.buildRegexp = function (ruleLine, prependSharp) {
 
     regexpStr = '^\\s*' + regexpStr.trim() + '\\s*$';
 
-    console.log(regexpStr);
-
     return { varNames, regexp: new RegExp(regexpStr, 'i') };
 }
 
