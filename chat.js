@@ -1,6 +1,10 @@
 
 
 
+window.scriptList = [];
+
+
+
 function updateScriptList() {
 
     let localList = ui.s();
